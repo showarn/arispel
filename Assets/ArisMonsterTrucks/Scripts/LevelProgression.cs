@@ -21,17 +21,15 @@ namespace ArisMonsterTrucks
         public const int LevelCount = 12;
         private const string SelectedLevelKey = "progress.v2.selectedLevel";
 
-        public static LevelResult RecordResult(int levelNumber, int collectedCoins, bool playerWon)
+        public static LevelResult RecordResult(
+            int levelNumber,
+            float elapsedSeconds
+        )
         {
-            int rating = 1;
-            if (playerWon)
-            {
-                rating = 2;
-            }
-            if (playerWon && collectedCoins >= ColorTrackBuilder.ThreeDotCoinRequirement)
-            {
-                rating = 3;
-            }
+            // Migrera tidigare banstjärnor innan den nya rundan sparas, så
+            // den aktuella belöningen aldrig räknas dubbelt.
+            _ = GlobalStarWallet.Balance;
+            int rating = CalculateStars(elapsedSeconds);
 
             levelNumber = Mathf.Clamp(levelNumber, 1, LevelCount);
             string ratingKey = RatingKey(levelNumber);
@@ -45,6 +43,7 @@ namespace ArisMonsterTrucks
                 PlayerPrefs.SetInt(UnlockedKey(nextLevel), 1);
             }
             PlayerPrefs.Save();
+            GlobalStarWallet.Add(rating);
 
             return new LevelResult(
                 rating,
@@ -55,7 +54,40 @@ namespace ArisMonsterTrucks
 
         public static int GetBestLevelOneRating()
         {
-            return Mathf.Clamp(PlayerPrefs.GetInt(RatingKey(1), 0), 0, 3);
+            return Mathf.Clamp(PlayerPrefs.GetInt(RatingKey(1), 0), 0, 4);
+        }
+
+        public static int TotalStars => GlobalStarWallet.Balance;
+
+        public static int LegacyBestStarsTotal
+        {
+            get
+            {
+                int total = 0;
+                for (int level = 1; level <= LevelCount; level++)
+                {
+                    total += Mathf.Clamp(
+                        PlayerPrefs.GetInt(RatingKey(level), 0),
+                        0,
+                        4
+                    );
+                }
+                return total;
+            }
+        }
+
+        public static int CalculateStars(float elapsedSeconds)
+        {
+            elapsedSeconds = Mathf.Max(0f, elapsedSeconds);
+            if (elapsedSeconds <= 55f)
+            {
+                return 4;
+            }
+            if (elapsedSeconds <= 80f)
+            {
+                return 3;
+            }
+            return elapsedSeconds <= 120f ? 2 : 1;
         }
 
         public static bool IsLevelTwoUnlocked()
@@ -118,6 +150,7 @@ namespace ArisMonsterTrucks
                 PlayerPrefs.DeleteKey(RatingKey(level));
                 PlayerPrefs.DeleteKey(UnlockedKey(level));
             }
+            GlobalStarWallet.Reset();
             PlayerPrefs.Save();
         }
 

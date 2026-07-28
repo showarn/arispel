@@ -16,6 +16,8 @@ namespace ArisMonsterTrucks
 
     public static class ParentalControls
     {
+        public const int MinimumPinLength = 4;
+        public const int MaximumPinLength = 8;
         private const string ConfiguredKey = "parental.v1.configured";
         private const string SaltKey = "parental.v1.salt";
         private const string PasswordHashKey = "parental.v1.passwordHash";
@@ -37,13 +39,16 @@ namespace ArisMonsterTrucks
         public static bool IsValidPasswordFormat(string password)
         {
             string value = password ?? "";
-            if (value.Length < 4 || value.Length > 8)
+            if (
+                value.Length < MinimumPinLength
+                || value.Length > MaximumPinLength
+            )
             {
                 return false;
             }
             for (int index = 0; index < value.Length; index++)
             {
-                if (!char.IsDigit(value[index]))
+                if (value[index] < '0' || value[index] > '9')
                 {
                     return false;
                 }
@@ -82,7 +87,7 @@ namespace ArisMonsterTrucks
 
         public static bool VerifyPassword(string password)
         {
-            if (!IsConfigured)
+            if (!IsConfigured || !IsValidPasswordFormat(password))
             {
                 return false;
             }
@@ -101,6 +106,28 @@ namespace ArisMonsterTrucks
                 difference |= actual[index] ^ expected[index];
             }
             return difference == 0;
+        }
+
+        public static void ChangePassword(string password)
+        {
+            if (!IsConfigured)
+            {
+                throw new InvalidOperationException(
+                    "Föräldrakontrollen måste vara konfigurerad."
+                );
+            }
+            if (!IsValidPasswordFormat(password))
+            {
+                throw new ArgumentException(
+                    "Föräldrakoden måste bestå av 4–8 siffror.",
+                    nameof(password)
+                );
+            }
+
+            string salt = Guid.NewGuid().ToString("N");
+            PlayerPrefs.SetString(SaltKey, salt);
+            PlayerPrefs.SetString(PasswordHashKey, Hash(password, salt));
+            PlayerPrefs.Save();
         }
 
         public static void SetEnabled(ParentalGame game, bool enabled)

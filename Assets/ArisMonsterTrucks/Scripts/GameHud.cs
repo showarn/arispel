@@ -13,21 +13,25 @@ namespace ArisMonsterTrucks
         private RectTransform coinPanel;
         private RectTransform playerMarker;
         private RectTransform npcMarker;
+        private RectTransform progressFill;
         private Image gasImage;
         private Vector2 gasRestPosition;
+        private GameObject hintPanel;
         private GameObject finishPanel;
         private Text finishText;
         private Text resultCoinText;
+        private Text resultStarsText;
+        private Text totalStarsText;
         private Image finishTrackPreview;
         private Button finishActionButton;
         private Text finishActionButtonText;
         private Text unlockText;
-        private readonly Image[] resultDots = new Image[3];
         private RectTransform playerResultTruck;
         private RectTransform npcResultTruck;
         private GameObject playerWinnerLabel;
         private GameObject npcWinnerLabel;
         private Font font;
+        private RectTransform safeRoot;
 
         public static GameHud Create(RaceDirector raceDirector)
         {
@@ -55,14 +59,23 @@ namespace ArisMonsterTrucks
                 : Vector3.one;
             gasImage.rectTransform.anchoredPosition = gasRestPosition
                 + (pressed ? new Vector2(0f, -22f) : Vector2.zero);
+            if (hintPanel != null)
+            {
+                hintPanel.SetActive(!pressed);
+            }
         }
 
         public void SetProgress(float playerX, float npcX)
         {
             float playerT = Mathf.InverseLerp(-6f, ColorTrackBuilder.FinishX, playerX);
             float npcT = Mathf.InverseLerp(-9f, ColorTrackBuilder.FinishX, npcX);
-            playerMarker.anchorMin = playerMarker.anchorMax = new Vector2(playerT, 0.5f);
-            npcMarker.anchorMin = npcMarker.anchorMax = new Vector2(npcT, 0.5f);
+            float playerAnchor = Mathf.Lerp(0.08f, 0.86f, playerT);
+            float npcAnchor = Mathf.Lerp(0.08f, 0.86f, npcT);
+            playerMarker.anchorMin = playerMarker.anchorMax =
+                new Vector2(playerAnchor, 0.3f);
+            npcMarker.anchorMin = npcMarker.anchorMax =
+                new Vector2(npcAnchor, 0.7f);
+            progressFill.anchorMax = new Vector2(playerAnchor, 0.5f);
         }
 
         public void ShowCountdown(string value)
@@ -90,6 +103,10 @@ namespace ArisMonsterTrucks
                 ? "NÄSTAN!"
                 : "VINST!";
             resultCoinText.text = "+" + coins + " MYNT";
+            resultStarsText.text = "+" + rating + (
+                rating == 1 ? " STJÄRNA" : " STJÄRNOR"
+            );
+            totalStarsText.text = "★ " + LevelProgression.TotalStars;
             finishActionButton.onClick.RemoveAllListeners();
             if (npcWasFirst)
             {
@@ -126,6 +143,12 @@ namespace ArisMonsterTrucks
             scaler.matchWidthOrHeight = 0.5f;
             gameObject.AddComponent<GraphicRaycaster>();
 
+            GameObject safeObject = new("Säker spel-HUD", typeof(RectTransform));
+            safeObject.transform.SetParent(transform, false);
+            safeRoot = safeObject.GetComponent<RectTransform>();
+            Stretch(safeRoot);
+            safeObject.AddComponent<SafeAreaFitter>();
+
             if (FindFirstObjectByType<EventSystem>() == null)
             {
                 GameObject eventObject = new("Pekskärmssystem");
@@ -133,7 +156,7 @@ namespace ArisMonsterTrucks
                 eventObject.AddComponent<StandaloneInputModule>();
             }
 
-            BuildCoinCounter();
+            BuildPlayerCard();
             BuildProgressBar();
             BuildMenuButton();
             BuildGasButton();
@@ -144,7 +167,7 @@ namespace ArisMonsterTrucks
 
         private void BuildMenuButton()
         {
-            Button menu = CreateButton(transform, "MENY", Vector2.zero);
+            Button menu = CreateButton(safeRoot, "MENY", Vector2.zero);
             menu.image.sprite = RuntimeArt.RoundedRectangleSprite(
                 "RaceMenuButton",
                 RuntimeArt.Hex("#40245F"),
@@ -158,11 +181,12 @@ namespace ArisMonsterTrucks
                 menu.image.rectTransform,
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
-                new Vector2(-135f, -72f),
+                new Vector2(-130f, -64f),
                 new Vector2(220f, 92f)
             );
             Text label = menu.GetComponentInChildren<Text>();
-            label.fontSize = 38;
+            label.text = "MENY  ≡";
+            label.fontSize = 34;
             menu.onClick.AddListener(director.ExitToMenu);
         }
 
@@ -170,57 +194,218 @@ namespace ArisMonsterTrucks
         {
             Image panel = CreateImage(
                 "Myntpanel",
-                transform,
+                safeRoot,
                 RuntimeArt.RoundedRectangleSprite(
                     "CoinPanel",
                     RuntimeArt.Hex("#6E3B15"),
                     RuntimeArt.Hex("#FFF3B0"),
-                    300,
-                    120,
-                    38,
-                    9
+                    260,
+                    92,
+                    30,
+                    7
                 )
             );
             coinPanel = panel.rectTransform;
-            SetRect(coinPanel, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(210f, -105f), new Vector2(310f, 120f));
+            SetRect(
+                coinPanel,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(145f, -64f),
+                new Vector2(260f, 92f)
+            );
 
             Image coin = CreateImage("Myntsymbol", panel.transform, RuntimeArt.GoldCoinSprite());
-            SetRect(coin.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(62f, 0f), new Vector2(76f, 76f));
+            SetRect(
+                coin.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(49f, 0f),
+                new Vector2(64f, 64f)
+            );
 
-            Text star = CreateText("Stjärna", coin.transform, "★", 48, RuntimeArt.Hex("#FFF7BA"));
+            Text star = CreateText("Stjärna", coin.transform, "★", 39, RuntimeArt.Hex("#FFF7BA"));
             Stretch(star.rectTransform);
 
-            coinText = CreateText("Myntantal", panel.transform, "0", 68, RuntimeArt.Hex("#4A266C"));
+            coinText = CreateText("Myntantal", panel.transform, "0", 48, RuntimeArt.Hex("#4A266C"));
             coinText.alignment = TextAnchor.MiddleCenter;
-            SetRect(coinText.rectTransform, new Vector2(0.63f, 0.5f), new Vector2(0.63f, 0.5f), Vector2.zero, new Vector2(150f, 90f));
+            SetRect(
+                coinText.rectTransform,
+                new Vector2(0.68f, 0.5f),
+                new Vector2(0.68f, 0.5f),
+                Vector2.zero,
+                new Vector2(140f, 74f)
+            );
+        }
+
+        private void BuildPlayerCard()
+        {
+            Image panel = CreateImage(
+                "Spelarprofil",
+                safeRoot,
+                RuntimeArt.RoundedRectangleSprite(
+                    "RacePlayerPanel",
+                    RuntimeArt.Hex("#B77A16"),
+                    RuntimeArt.Hex("#FFF0A2"),
+                    420,
+                    92,
+                    30,
+                    7
+                )
+            );
+            SetRect(
+                panel.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(230f, -64f),
+                new Vector2(420f, 92f)
+            );
+            coinPanel = panel.rectTransform;
+
+            Image avatarFrame = CreateImage(
+                "Profilbildsram",
+                panel.transform,
+                RuntimeArt.CircleSprite(
+                    "RaceProfileFrame",
+                    RuntimeArt.Hex("#B77A16"),
+                    Color.white,
+                    Color.white,
+                    96
+                )
+            );
+            SetRect(
+                avatarFrame.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(51f, 0f),
+                new Vector2(72f, 72f)
+            );
+            Image avatar = CreateImage(
+                "Profilbild",
+                avatarFrame.transform,
+                RuntimeArt.LoadSprite("Art/Fishing/Character/head_idle")
+            );
+            avatar.preserveAspect = true;
+            SetRect(
+                avatar.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0f, -2f),
+                new Vector2(62f, 62f)
+            );
+
+            string username = string.IsNullOrEmpty(PlayerProfile.Username)
+                ? "DU"
+                : PlayerProfile.Username;
+            Text name = CreateText(
+                "Spelarnamn",
+                panel.transform,
+                username,
+                30,
+                RuntimeArt.Hex("#4A266C")
+            );
+            name.alignment = TextAnchor.MiddleLeft;
+            SetRect(
+                name.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(230f, 20f),
+                new Vector2(270f, 40f)
+            );
+
+            Image profileCoin = CreateImage(
+                "Profilmynt",
+                panel.transform,
+                RuntimeArt.GoldCoinSprite()
+            );
+            profileCoin.preserveAspect = true;
+            SetRect(
+                profileCoin.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(125f, -23f),
+                new Vector2(34f, 34f)
+            );
+            coinText = CreateText(
+                "Insamlade mynt",
+                panel.transform,
+                "0",
+                22,
+                RuntimeArt.Hex("#4A266C")
+            );
+            coinText.alignment = TextAnchor.MiddleLeft;
+            SetRect(
+                coinText.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(190f, -23f),
+                new Vector2(100f, 34f)
+            );
+
+            totalStarsText = CreateText(
+                "Samlade stjärnor",
+                panel.transform,
+                "★ " + LevelProgression.TotalStars,
+                23,
+                RuntimeArt.Hex("#9A5200")
+            );
+            totalStarsText.alignment = TextAnchor.MiddleLeft;
+            SetRect(
+                totalStarsText.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(330f, -22f),
+                new Vector2(150f, 36f)
+            );
         }
 
         private void BuildProgressBar()
         {
             Image panel = CreateImage(
                 "Tävlingsmätare",
-                transform,
+                safeRoot,
                 RuntimeArt.RoundedRectangleSprite(
                     "ProgressPanel",
                     RuntimeArt.Hex("#432A67"),
                     new Color(1f, 1f, 1f, 0.9f),
-                    720,
-                    126,
-                    42,
-                    9
+                    620,
+                    92,
+                    30,
+                    7
                 )
             );
-            SetRect(panel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -88f), new Vector2(720f, 126f));
+            SetRect(
+                panel.rectTransform,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(90f, -64f),
+                new Vector2(620f, 92f)
+            );
 
             Image line = CreateImage("Bana", panel.transform, null);
-            line.color = RuntimeArt.Hex("#76D94D");
-            SetRect(line.rectTransform, new Vector2(0.08f, 0.5f), new Vector2(0.92f, 0.5f), Vector2.zero, new Vector2(0f, 18f));
+            line.color = RuntimeArt.Hex("#E8E2CF");
+            SetRect(
+                line.rectTransform,
+                new Vector2(0.08f, 0.5f),
+                new Vector2(0.86f, 0.5f),
+                Vector2.zero,
+                new Vector2(0f, 18f)
+            );
+            Image fill = CreateImage("Din progress", panel.transform, null);
+            fill.color = RuntimeArt.Hex("#76D94D");
+            progressFill = fill.rectTransform;
+            SetRect(
+                progressFill,
+                new Vector2(0.08f, 0.5f),
+                new Vector2(0.08f, 0.5f),
+                Vector2.zero,
+                new Vector2(0f, 18f)
+            );
 
-            playerMarker = CreateMarker(panel.transform, "DU", RuntimeArt.Hex("#FFD83D"), 0.08f, 0.28f);
-            npcMarker = CreateMarker(panel.transform, "K", RuntimeArt.Hex("#F58BFF"), 0.03f, 0.72f);
+            playerMarker = CreateMarker(panel.transform, "DU", RuntimeArt.Hex("#FFD83D"), 0.08f, 0.3f);
+            npcMarker = CreateMarker(panel.transform, "K", RuntimeArt.Hex("#F58BFF"), 0.08f, 0.7f);
 
             Text finishFlag = CreateText("Målflagga", panel.transform, "MÅL", 28, RuntimeArt.Hex("#4A266C"));
-            SetRect(finishFlag.rectTransform, new Vector2(0.94f, 0.5f), new Vector2(0.94f, 0.5f), Vector2.zero, new Vector2(90f, 70f));
+            SetRect(finishFlag.rectTransform, new Vector2(0.93f, 0.5f), new Vector2(0.93f, 0.5f), Vector2.zero, new Vector2(80f, 62f));
         }
 
         private RectTransform CreateMarker(Transform parent, string label, Color color, float start, float height)
@@ -243,7 +428,7 @@ namespace ArisMonsterTrucks
         private void BuildGasButton()
         {
             GameObject buttonObject = new("Stor gaspedal");
-            buttonObject.transform.SetParent(transform, false);
+            buttonObject.transform.SetParent(safeRoot, false);
             gasImage = buttonObject.AddComponent<Image>();
             gasImage.sprite = RuntimeArt.CircleSprite(
                 "GasPedalRing",
@@ -298,7 +483,7 @@ namespace ArisMonsterTrucks
 
         private void BuildCountdown()
         {
-            countdownText = CreateText("Nedräkning", transform, "3", 210, Color.white);
+            countdownText = CreateText("Nedräkning", safeRoot, "3", 210, Color.white);
             countdownText.alignment = TextAnchor.MiddleCenter;
             countdownText.fontStyle = FontStyle.Bold;
             countdownText.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -319,7 +504,7 @@ namespace ArisMonsterTrucks
         {
             Image hint = CreateImage(
                 "Hjälptext",
-                transform,
+                safeRoot,
                 RuntimeArt.RoundedRectangleSprite(
                     "HintPanel",
                     new Color(0.2f, 0.1f, 0.35f, 0.8f),
@@ -330,6 +515,7 @@ namespace ArisMonsterTrucks
                     2
                 )
             );
+            hintPanel = hint.gameObject;
             SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(340f, 90f), new Vector2(590f, 96f));
             Text text = CreateText("Text", hint.transform, "HÅLL IN GASEN!", 42, Color.white);
             Stretch(text.rectTransform);
@@ -337,7 +523,7 @@ namespace ArisMonsterTrucks
 
         private void BuildFinishPanel()
         {
-            Image shade = CreateImage("Målruta", transform, null);
+            Image shade = CreateImage("Målruta", safeRoot, null);
             shade.color = new Color(0.18f, 0.08f, 0.3f, 0.82f);
             Stretch(shade.rectTransform);
             finishPanel = shade.gameObject;
@@ -455,11 +641,11 @@ namespace ArisMonsterTrucks
             resultCoinText = CreateText("Insamlade mynt", coinResultPanel.transform, "+0 MYNT", 46, RuntimeArt.Hex("#4A266C"));
             SetRect(resultCoinText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(42f, 0f), new Vector2(205f, 82f));
 
-            Image dotsPanel = CreateImage(
-                "Banpluppar",
+            Image starsPanel = CreateImage(
+                "Stjärnresultat",
                 card.transform,
                 RuntimeArt.RoundedRectangleSprite(
-                    "RatingResultPanel",
+                    "StarResultPanel",
                     RuntimeArt.Hex("#4A266C"),
                     RuntimeArt.Hex("#FFF7D6"),
                     360,
@@ -468,29 +654,21 @@ namespace ArisMonsterTrucks
                     7
                 )
             );
-            SetRect(dotsPanel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(190f, -190f), new Vector2(360f, 105f));
-            for (int i = 0; i < resultDots.Length; i++)
-            {
-                resultDots[i] = CreateImage(
-                    "Plupp " + (i + 1),
-                    dotsPanel.transform,
-                    RuntimeArt.CircleSprite(
-                        "ResultRatingDot",
-                        RuntimeArt.Hex("#4A266C"),
-                        Color.white,
-                        Color.white,
-                        96
-                    )
-                );
-                resultDots[i].type = Image.Type.Simple;
-                SetRect(
-                    resultDots[i].rectTransform,
-                    new Vector2(0.5f, 0.5f),
-                    new Vector2(0.5f, 0.5f),
-                    new Vector2((i - 1) * 88f, 0f),
-                    new Vector2(68f, 68f)
-                );
-            }
+            SetRect(
+                starsPanel.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(300f, -105f),
+                new Vector2(360f, 105f)
+            );
+            resultStarsText = CreateText(
+                "Intjänade stjärnor",
+                starsPanel.transform,
+                "+1 STJÄRNA",
+                35,
+                RuntimeArt.Hex("#D17A00")
+            );
+            Stretch(resultStarsText.rectTransform);
 
             unlockText = CreateText("Upplåsning", card.transform, "NY BANA UPPLÅST!", 30, RuntimeArt.Hex("#5C2A83"));
             Image unlockPanel = CreateImage(
@@ -521,7 +699,6 @@ namespace ArisMonsterTrucks
             finishActionButtonText.fontSize = 36;
             playerResultTruck.gameObject.SetActive(false);
             npcResultTruck.gameObject.SetActive(false);
-            dotsPanel.gameObject.SetActive(false);
             unlockPanel.gameObject.SetActive(false);
             finishPanel.SetActive(false);
         }

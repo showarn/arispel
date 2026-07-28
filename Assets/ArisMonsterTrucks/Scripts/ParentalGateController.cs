@@ -16,10 +16,9 @@ namespace ArisMonsterTrucks
         private GameObject passwordRoot;
         private GameObject settingsRoot;
         private GameObject unlockRoot;
-        private InputField answerInput;
-        private InputField passwordInput;
-        private InputField confirmInput;
-        private InputField unlockInput;
+        private ParentPinKeypad challengeKeypad;
+        private ParentPinKeypad passwordKeypad;
+        private ParentPinKeypad unlockKeypad;
         private Text challengeStatus;
         private Text passwordStatus;
         private Text settingsStatus;
@@ -27,7 +26,12 @@ namespace ArisMonsterTrucks
         private Text settingsTitle;
         private Text settingsStep;
         private bool initialSetupMode;
+        private bool passwordChangeMode;
         private string pendingPassword = "";
+        private string firstPasswordEntry = "";
+        private Text passwordPrompt;
+        private Button saveSettingsButton;
+        private Button changePinButton;
 
         public static ParentalGateController Create(
             Transform parent,
@@ -52,20 +56,18 @@ namespace ArisMonsterTrucks
         {
             HideAll();
             challengeStatus.text = "";
-            answerInput.text = "";
+            challengeKeypad.Clear();
             challengeRoot.SetActive(true);
             challengeRoot.transform.SetAsLastSibling();
-            answerInput.ActivateInputField();
         }
 
         public void ShowUnlock()
         {
             HideAll();
             unlockStatus.text = "";
-            unlockInput.text = "";
+            unlockKeypad.Clear();
             unlockRoot.SetActive(true);
             unlockRoot.transform.SetAsLastSibling();
-            unlockInput.ActivateInputField();
         }
 
         public void ShowInitialSettingsPreview()
@@ -84,6 +86,14 @@ namespace ArisMonsterTrucks
             HideAll();
         }
 
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+            {
+                HideAll();
+            }
+        }
+
         private void Build()
         {
             BuildChallenge();
@@ -98,11 +108,11 @@ namespace ArisMonsterTrucks
             challengeRoot = CreateBackdrop("Vuxenkontroll");
             Image panel = CreatePanel(
                 challengeRoot.transform,
-                new Vector2(0f, 5f),
-                new Vector2(1040f, 760f),
+                Vector2.zero,
+                new Vector2(1280f, 1010f),
                 RuntimeArt.Hex("#FFF7D6")
             );
-            CreateHeading(panel.transform, "VUXENKONTROLL", 68, 275f);
+            CreateHeading(panel.transform, "VUXENKONTROLL", 58, 430f);
             Text step = CreateText(
                 "Steg",
                 panel.transform,
@@ -110,7 +120,7 @@ namespace ArisMonsterTrucks
                 22,
                 RuntimeArt.Hex("#8B7694")
             );
-            SetRect(step.rectTransform, new Vector2(0f, 222f), new Vector2(500f, 40f));
+            SetRect(step.rectTransform, new Vector2(0f, 375f), new Vector2(500f, 40f));
             Text intro = CreateText(
                 "Förklaring",
                 panel.transform,
@@ -118,7 +128,7 @@ namespace ArisMonsterTrucks
                 28,
                 RuntimeArt.Hex("#66546F")
             );
-            SetRect(intro.rectTransform, new Vector2(0f, 150f), new Vector2(850f, 90f));
+            SetRect(intro.rectTransform, new Vector2(0f, 305f), new Vector2(1000f, 75f));
 
             Text question = CreateText(
                 "Vuxenfråga",
@@ -127,35 +137,18 @@ namespace ArisMonsterTrucks
                 72,
                 RuntimeArt.Hex("#3E2858")
             );
-            SetRect(question.rectTransform, new Vector2(0f, 30f), new Vector2(720f, 100f));
-
-            answerInput = CreateInput(
+            SetRect(question.rectTransform, new Vector2(0f, 225f), new Vector2(720f, 85f));
+            challengeKeypad = ParentPinKeypad.Create(
                 panel.transform,
-                "Skriv svaret",
-                new Vector2(0f, -90f),
-                new Vector2(460f, 95f),
+                font,
+                1,
+                3,
                 false,
-                3
+                CheckAdultAnswer,
+                HideAll
             );
-            Button continueButton = CreateButton(
-                panel.transform,
-                "FORTSÄTT",
-                new Vector2(0f, -220f),
-                new Vector2(500f, 105f),
-                RuntimeArt.Hex("#FF6B35"),
-                38
-            );
-            continueButton.onClick.AddListener(CheckAdultAnswer);
-            answerInput.onEndEdit.AddListener(_ =>
-            {
-                if (
-                    Input.GetKeyDown(KeyCode.Return)
-                    || Input.GetKeyDown(KeyCode.KeypadEnter)
-                )
-                {
-                    CheckAdultAnswer();
-                }
-            });
+            challengeKeypad.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(0f, -65f);
 
             challengeStatus = CreateText(
                 "Svarstatus",
@@ -164,7 +157,7 @@ namespace ArisMonsterTrucks
                 27,
                 RuntimeArt.Hex("#C33C55")
             );
-            SetRect(challengeStatus.rectTransform, new Vector2(0f, -310f), new Vector2(820f, 55f));
+            SetRect(challengeStatus.rectTransform, new Vector2(0f, -455f), new Vector2(900f, 45f));
         }
 
         private void BuildPasswordSetup()
@@ -173,10 +166,10 @@ namespace ArisMonsterTrucks
             Image panel = CreatePanel(
                 passwordRoot.transform,
                 Vector2.zero,
-                new Vector2(1040f, 780f),
+                new Vector2(1280f, 1010f),
                 RuntimeArt.Hex("#FFF7D6")
             );
-            CreateHeading(panel.transform, "SKAPA FÖRÄLDRAKOD", 62, 285f);
+            CreateHeading(panel.transform, "SKAPA FÖRÄLDRAKOD", 56, 430f);
             Text step = CreateText(
                 "Steg",
                 panel.transform,
@@ -184,7 +177,7 @@ namespace ArisMonsterTrucks
                 22,
                 RuntimeArt.Hex("#8B7694")
             );
-            SetRect(step.rectTransform, new Vector2(0f, 230f), new Vector2(500f, 40f));
+            SetRect(step.rectTransform, new Vector2(0f, 375f), new Vector2(500f, 40f));
             Text explanation = CreateText(
                 "Förklaring",
                 panel.transform,
@@ -192,40 +185,26 @@ namespace ArisMonsterTrucks
                 27,
                 RuntimeArt.Hex("#66546F")
             );
-            SetRect(explanation.rectTransform, new Vector2(0f, 155f), new Vector2(850f, 60f));
-            Text passwordLabel = CreateText(
+            SetRect(explanation.rectTransform, new Vector2(0f, 325f), new Vector2(1000f, 50f));
+            passwordPrompt = CreateText(
                 "Kodetikett",
                 panel.transform,
                 "VÄLJ 4–8 SIFFROR",
                 25,
                 RuntimeArt.Hex("#4A266C")
             );
-            SetRect(passwordLabel.rectTransform, new Vector2(0f, 85f), new Vector2(700f, 45f));
-            passwordInput = CreateInput(
+            SetRect(passwordPrompt.rectTransform, new Vector2(0f, 275f), new Vector2(700f, 45f));
+            passwordKeypad = ParentPinKeypad.Create(
                 panel.transform,
-                "Ny kod",
-                new Vector2(0f, 15f),
-                new Vector2(520f, 90f),
+                font,
+                ParentalControls.MinimumPinLength,
+                ParentalControls.MaximumPinLength,
                 true,
-                8
+                ConfirmNewPassword,
+                HideAll
             );
-            confirmInput = CreateInput(
-                panel.transform,
-                "Upprepa koden",
-                new Vector2(0f, -95f),
-                new Vector2(520f, 90f),
-                true,
-                8
-            );
-            Button continueButton = CreateButton(
-                panel.transform,
-                "FORTSÄTT TILL SPELVAL",
-                new Vector2(0f, -225f),
-                new Vector2(610f, 105f),
-                RuntimeArt.Hex("#FF6B35"),
-                34
-            );
-            continueButton.onClick.AddListener(ConfirmNewPassword);
+            passwordKeypad.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(0f, -65f);
             passwordStatus = CreateText(
                 "Kodstatus",
                 panel.transform,
@@ -233,7 +212,7 @@ namespace ArisMonsterTrucks
                 26,
                 RuntimeArt.Hex("#C33C55")
             );
-            SetRect(passwordStatus.rectTransform, new Vector2(0f, -320f), new Vector2(800f, 50f));
+            SetRect(passwordStatus.rectTransform, new Vector2(0f, -455f), new Vector2(900f, 45f));
         }
 
         private void BuildSettings()
@@ -284,7 +263,17 @@ namespace ArisMonsterTrucks
             );
             SetRect(settingsStatus.rectTransform, new Vector2(0f, -325f), new Vector2(1150f, 42f));
 
-            Button save = CreateButton(
+            changePinButton = CreateButton(
+                panel.transform,
+                "ÄNDRA KOD",
+                new Vector2(-410f, -382f),
+                new Vector2(330f, 92f),
+                RuntimeArt.Hex("#7A5AA6"),
+                30
+            );
+            changePinButton.onClick.AddListener(BeginPasswordChange);
+
+            saveSettingsButton = CreateButton(
                 panel.transform,
                 "SPARA OCH FORTSÄTT",
                 new Vector2(0f, -382f),
@@ -292,7 +281,7 @@ namespace ArisMonsterTrucks
                 RuntimeArt.Hex("#4FC66A"),
                 34
             );
-            save.onClick.AddListener(SaveSettings);
+            saveSettingsButton.onClick.AddListener(SaveSettings);
 
             Text privacy = CreateText(
                 "Lokal lagring",
@@ -310,10 +299,10 @@ namespace ArisMonsterTrucks
             Image panel = CreatePanel(
                 unlockRoot.transform,
                 Vector2.zero,
-                new Vector2(930f, 650f),
+                new Vector2(1100f, 1010f),
                 RuntimeArt.Hex("#FFF7D6")
             );
-            CreateHeading(panel.transform, "FÖRÄLDRAR", 66, 230f);
+            CreateHeading(panel.transform, "FÖRÄLDRAR", 58, 430f);
             Text prompt = CreateText(
                 "Kodfråga",
                 panel.transform,
@@ -321,33 +310,18 @@ namespace ArisMonsterTrucks
                 30,
                 RuntimeArt.Hex("#66546F")
             );
-            SetRect(prompt.rectTransform, new Vector2(0f, 115f), new Vector2(700f, 60f));
-            unlockInput = CreateInput(
+            SetRect(prompt.rectTransform, new Vector2(0f, 355f), new Vector2(700f, 60f));
+            unlockKeypad = ParentPinKeypad.Create(
                 panel.transform,
-                "Föräldrakod",
-                new Vector2(0f, 20f),
-                new Vector2(500f, 95f),
+                font,
+                ParentalControls.MinimumPinLength,
+                ParentalControls.MaximumPinLength,
                 true,
-                8
+                VerifyUnlock,
+                HideAll
             );
-            Button open = CreateButton(
-                panel.transform,
-                "ÖPPNA",
-                new Vector2(185f, -110f),
-                new Vector2(390f, 98f),
-                RuntimeArt.Hex("#4FC66A"),
-                36
-            );
-            open.onClick.AddListener(VerifyUnlock);
-            Button cancel = CreateButton(
-                panel.transform,
-                "AVBRYT",
-                new Vector2(-250f, -110f),
-                new Vector2(360f, 98f),
-                RuntimeArt.Hex("#818795"),
-                34
-            );
-            cancel.onClick.AddListener(HideAll);
+            unlockKeypad.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(0f, -65f);
             unlockStatus = CreateText(
                 "Kodstatus",
                 panel.transform,
@@ -355,16 +329,15 @@ namespace ArisMonsterTrucks
                 26,
                 RuntimeArt.Hex("#C33C55")
             );
-            SetRect(unlockStatus.rectTransform, new Vector2(0f, -215f), new Vector2(700f, 55f));
+            SetRect(unlockStatus.rectTransform, new Vector2(0f, -455f), new Vector2(800f, 45f));
         }
 
-        private void CheckAdultAnswer()
+        private void CheckAdultAnswer(string answer)
         {
-            if (answerInput.text.Trim() != "100")
+            if (answer != "100")
             {
                 challengeStatus.text = "DET VAR INTE RÄTT – FÖRSÖK IGEN";
-                answerInput.text = "";
-                answerInput.ActivateInputField();
+                challengeKeypad.Clear();
                 return;
             }
 
@@ -374,43 +347,72 @@ namespace ArisMonsterTrucks
         private void ShowPasswordSetup()
         {
             HideAll();
+            passwordChangeMode = false;
+            PreparePasswordSetup();
+        }
+
+        private void BeginPasswordChange()
+        {
+            HideAll();
+            passwordChangeMode = true;
+            PreparePasswordSetup();
+        }
+
+        private void PreparePasswordSetup()
+        {
             pendingPassword = "";
-            passwordInput.text = "";
-            confirmInput.text = "";
+            firstPasswordEntry = "";
+            passwordPrompt.text = passwordChangeMode
+                ? "VÄLJ EN NY KOD MED 4–8 SIFFROR"
+                : "VÄLJ 4–8 SIFFROR";
+            passwordKeypad.Clear();
             passwordStatus.text = "";
             passwordRoot.SetActive(true);
             passwordRoot.transform.SetAsLastSibling();
-            passwordInput.ActivateInputField();
         }
 
-        private void ConfirmNewPassword()
+        private void ConfirmNewPassword(string value)
         {
-            if (!ParentalControls.IsValidPasswordFormat(passwordInput.text))
+            if (!ParentalControls.IsValidPasswordFormat(value))
             {
                 passwordStatus.text = "KODEN SKA VARA 4–8 SIFFROR";
-                passwordInput.ActivateInputField();
                 return;
             }
-            if (passwordInput.text != confirmInput.text)
+            if (string.IsNullOrEmpty(firstPasswordEntry))
+            {
+                firstPasswordEntry = value;
+                passwordPrompt.text = "UPPREPA KODEN";
+                passwordStatus.text = "";
+                return;
+            }
+            if (firstPasswordEntry != value)
             {
                 passwordStatus.text = "KODERNA ÄR INTE LIKADANA";
-                confirmInput.ActivateInputField();
+                firstPasswordEntry = "";
+                passwordPrompt.text = "VÄLJ EN NY KOD";
                 return;
             }
 
-            pendingPassword = passwordInput.text;
-            passwordInput.text = "";
-            confirmInput.text = "";
+            pendingPassword = firstPasswordEntry;
+            firstPasswordEntry = "";
+            if (passwordChangeMode)
+            {
+                ParentalControls.ChangePassword(pendingPassword);
+                pendingPassword = "";
+                passwordChangeMode = false;
+                ShowSettings(false);
+                settingsStatus.text = "KODEN ÄR ÄNDRAD";
+                return;
+            }
             ShowSettings(true);
         }
 
-        private void VerifyUnlock()
+        private void VerifyUnlock(string value)
         {
-            if (!ParentalControls.VerifyPassword(unlockInput.text))
+            if (!ParentalControls.VerifyPassword(value))
             {
                 unlockStatus.text = "FEL KOD – FÖRSÖK IGEN";
-                unlockInput.text = "";
-                unlockInput.ActivateInputField();
+                unlockKeypad.Clear();
                 return;
             }
 
@@ -428,6 +430,16 @@ namespace ArisMonsterTrucks
                 ? "STEG 3 AV 3  •  KODEN ÄR SPARAD"
                 : "ÄNDRA SPELENS LÄGE OCH SPARA";
             settingsStatus.text = "";
+            changePinButton.gameObject.SetActive(!isInitialSetup);
+            SetRect(
+                saveSettingsButton.image.rectTransform,
+                isInitialSetup
+                    ? new Vector2(0f, -382f)
+                    : new Vector2(220f, -382f),
+                isInitialSetup
+                    ? new Vector2(610f, 92f)
+                    : new Vector2(610f, 92f)
+            );
             foreach (KeyValuePair<ParentalGame, ParentalSwipeToggle> pair in toggles)
             {
                 pair.Value.SetValue(
@@ -560,59 +572,14 @@ namespace ArisMonsterTrucks
                 root.transform,
                 RuntimeArt.LoadSprite("Art/Environment/colorful_background")
             );
+            background.gameObject.AddComponent<SafeAreaFullBleed>();
             background.type = Image.Type.Simple;
             Stretch(background.rectTransform);
             Image shade = CreateImage("Vuxentoning", root.transform, null);
+            shade.gameObject.AddComponent<SafeAreaFullBleed>();
             shade.color = new Color(0.04f, 0.08f, 0.18f, 0.72f);
             Stretch(shade.rectTransform);
             return root;
-        }
-
-        private InputField CreateInput(
-            Transform parent,
-            string placeholderValue,
-            Vector2 position,
-            Vector2 size,
-            bool password,
-            int characterLimit
-        )
-        {
-            Image panel = CreatePanel(parent, position, size, Color.white);
-            InputField input = panel.gameObject.AddComponent<InputField>();
-            input.targetGraphic = panel;
-            input.characterLimit = characterLimit;
-            input.lineType = InputField.LineType.SingleLine;
-            input.characterValidation = InputField.CharacterValidation.Integer;
-            input.keyboardType = TouchScreenKeyboardType.NumberPad;
-            input.contentType = password
-                ? InputField.ContentType.Pin
-                : InputField.ContentType.IntegerNumber;
-
-            Text value = CreateText(
-                "Värde",
-                panel.transform,
-                "",
-                38,
-                RuntimeArt.Hex("#40245F")
-            );
-            value.supportRichText = false;
-            value.alignment = TextAnchor.MiddleCenter;
-            Stretch(value.rectTransform);
-            value.rectTransform.offsetMin = new Vector2(22f, 6f);
-            value.rectTransform.offsetMax = new Vector2(-22f, -6f);
-            input.textComponent = value;
-
-            Text placeholder = CreateText(
-                "Platshållare",
-                panel.transform,
-                placeholderValue,
-                28,
-                RuntimeArt.Hex("#A79BAE")
-            );
-            placeholder.fontStyle = FontStyle.Italic;
-            Stretch(placeholder.rectTransform);
-            input.placeholder = placeholder;
-            return input;
         }
 
         private Text CreateHeading(
@@ -635,6 +602,11 @@ namespace ArisMonsterTrucks
 
         private void HideAll()
         {
+            challengeKeypad?.Clear();
+            passwordKeypad?.Clear();
+            unlockKeypad?.Clear();
+            firstPasswordEntry = "";
+            passwordChangeMode = false;
             challengeRoot?.SetActive(false);
             passwordRoot?.SetActive(false);
             settingsRoot?.SetActive(false);

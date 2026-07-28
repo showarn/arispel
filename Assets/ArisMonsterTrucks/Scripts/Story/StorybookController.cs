@@ -50,6 +50,8 @@ namespace ArisMonsterTrucks.Stories
             narrationSource == null ? 0f : narrationSource.time;
         public bool IsNarrationPlaying =>
             narrationSource != null && narrationSource.isPlaying;
+        public bool IsTextVisible => textVisible;
+        public bool IsNarrationEnabled => narrationEnabled;
 
         public static StorybookController Create(
             Transform parent,
@@ -78,6 +80,8 @@ namespace ArisMonsterTrucks.Stories
             }
 
             StopAndReset();
+            textVisible = AppPreferences.StoryTextVisible;
+            narrationEnabled = AppPreferences.SoundEnabled;
             story = definition;
             root.SetActive(true);
             titleText.text = story.Title.ToUpperInvariant();
@@ -149,6 +153,13 @@ namespace ArisMonsterTrucks.Stories
                 62
             );
             backButton.onClick.AddListener(LeaveStory);
+            SetRect(
+                backButton.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(140f, 86f)
+            );
 
             titleText = CreateText(
                 "Sagotitel",
@@ -175,12 +186,19 @@ namespace ArisMonsterTrucks.Stories
                 24
             );
             restartButton.onClick.AddListener(RestartStory);
+            SetRect(
+                restartButton.image.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-125f, -58f),
+                new Vector2(200f, 74f)
+            );
 
             Image textPanel = CreatePanel(
                 "Berättelsetext",
                 safe.transform,
-                new Vector2(-440f, -215f),
-                new Vector2(960f, 490f),
+                new Vector2(-440f, -175f),
+                new Vector2(960f, 430f),
                 new Color(0.2f, 0.22f, 0.25f, 0.56f)
             );
             textPanel.raycastTarget = false;
@@ -206,7 +224,21 @@ namespace ArisMonsterTrucks.Stories
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
                 Vector2.zero,
-                new Vector2(870f, 442f)
+                new Vector2(870f, 382f)
+            );
+
+            GameObject controlObject = new(
+                "Gemensam nedre sagokontroll",
+                typeof(RectTransform)
+            );
+            controlObject.transform.SetParent(safe.transform, false);
+            RectTransform controlBar = controlObject.GetComponent<RectTransform>();
+            SetRect(
+                controlBar,
+                new Vector2(0.5f, 0f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0f, 68f),
+                new Vector2(1050f, 112f)
             );
 
             pageNumberText = CreateText(
@@ -218,28 +250,66 @@ namespace ArisMonsterTrucks.Stories
             );
             SetRect(
                 pageNumberText.rectTransform,
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(600f, -485f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0f, 137f),
                 new Vector2(250f, 50f)
             );
             AddOutline(pageNumberText, RuntimeArt.Hex("#332052"), 2f);
 
+            textToggleButton = CreateButton(
+                controlObject.transform,
+                "",
+                new Vector2(-405f, 0f),
+                new Vector2(180f, 82f),
+                RuntimeArt.Hex("#66507F"),
+                23
+            );
+            textToggleText = CreateText(
+                "Textläge",
+                textToggleButton.transform,
+                "TEXT PÅ",
+                25,
+                Color.white
+            );
+            Stretch(textToggleText.rectTransform);
+            AddOutline(textToggleText, RuntimeArt.Hex("#332052"), 2f);
+            textToggleButton.onClick.AddListener(ToggleText);
+
+            narrationToggleButton = CreateButton(
+                controlObject.transform,
+                "",
+                new Vector2(-210f, 0f),
+                new Vector2(180f, 82f),
+                RuntimeArt.Hex("#49C968"),
+                23
+            );
+            narrationToggleText = CreateText(
+                "Ljudläge",
+                narrationToggleButton.transform,
+                "LJUD PÅ",
+                25,
+                Color.white
+            );
+            Stretch(narrationToggleText.rectTransform);
+            AddOutline(narrationToggleText, RuntimeArt.Hex("#332052"), 2f);
+            narrationToggleButton.onClick.AddListener(ToggleNarration);
+
             previousButton = CreateButton(
-                safe.transform,
+                controlObject.transform,
                 "‹",
-                new Vector2(325f, -445f),
-                new Vector2(100f, 112f),
+                new Vector2(-30f, 0f),
+                new Vector2(92f, 96f),
                 RuntimeArt.Hex("#7A5AA6"),
                 68
             );
             previousButton.onClick.AddListener(() => MovePage(-1));
 
             playPauseButton = CreateButton(
-                safe.transform,
+                controlObject.transform,
                 "",
-                new Vector2(490f, -445f),
-                new Vector2(180f, 88f),
+                new Vector2(115f, 0f),
+                new Vector2(170f, 82f),
                 RuntimeArt.Hex("#49C968"),
                 26
             );
@@ -255,10 +325,10 @@ namespace ArisMonsterTrucks.Stories
             playPauseButton.onClick.AddListener(TogglePlayback);
 
             nextButton = CreateButton(
-                safe.transform,
+                controlObject.transform,
                 "›",
-                new Vector2(655f, -445f),
-                new Vector2(100f, 112f),
+                new Vector2(260f, 0f),
+                new Vector2(92f, 96f),
                 RuntimeArt.Hex("#7A5AA6"),
                 68
             );
@@ -600,21 +670,22 @@ namespace ArisMonsterTrucks.Stories
         private void ToggleText()
         {
             textVisible = !textVisible;
+            AppPreferences.StoryTextVisible = textVisible;
             RefreshReadingOptions();
         }
 
         private void ToggleNarration()
         {
             narrationEnabled = !narrationEnabled;
+            AppPreferences.SoundEnabled = narrationEnabled;
             if (narrationEnabled)
             {
-                narrationSource.time = Mathf.Clamp(
-                    story.Pages[currentPage].StartTime,
-                    0f,
-                    Mathf.Max(0f, story.Narration.length - 0.01f)
-                );
                 lastNarrationTime = narrationSource.time;
-                narrationSource.Play();
+                narrationSource.UnPause();
+                if (!narrationSource.isPlaying)
+                {
+                    narrationSource.Play();
+                }
                 pausedByUser = false;
             }
             else

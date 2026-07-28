@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,11 +9,12 @@ namespace ArisMonsterTrucks
 {
     public sealed class PuzzleGameController : MonoBehaviour
     {
-        private static readonly Vector2 BoardPosition = new(0f, 35f);
+        private static readonly Vector2 BoardPosition = new(0f, -35f);
         private static readonly Vector2 BoardSize = new(1140f, 760f);
         private const float SourceWidth = 1536f;
         private const float SourceHeight = 1024f;
-        private const float TrayPieceScale = 0.24f;
+        private const float SidePieceScale = 0.34f;
+        private const float SideRackX = 770f;
         private const int PuzzleCount = 9;
         private const int CardsPerPage = 3;
 
@@ -56,15 +58,18 @@ namespace ArisMonsterTrucks
         private GameObject playRoot;
         private GameObject completionPanel;
         private RectTransform playRect;
+        private RectTransform pieceRoot;
+        private RectTransform hubSafeRoot;
+        private RectTransform playSafeRoot;
         private Font font;
         private Action onBack;
-        private Text progressText;
         private Text puzzleTitleText;
-        private Text puzzleCoinText;
-        private Text hubCoinText;
-        private Text completionRewardText;
+        private Text hubScoreText;
+        private Text playScoreText;
+        private Text profileStarsText;
+        private Text soundButtonText;
         private Text completionTimeText;
-        private Text completionBalanceText;
+        private Text completionAwardText;
         private Text puzzlePageText;
         private Image puzzleBackground;
         private Image puzzleGuide;
@@ -72,7 +77,12 @@ namespace ArisMonsterTrucks
         private Button previousPuzzlePageButton;
         private Button nextPuzzlePageButton;
         private Button nextPuzzleButton;
+        private Button helpButton;
         private Text nextPuzzleButtonText;
+        private Image tutorialHand;
+        private Sprite tutorialHandOpen;
+        private Sprite tutorialHandPinched;
+        private Coroutine tutorialRoutine;
         private readonly List<Button> puzzleCardButtons = new();
         private readonly List<GameObject> puzzleCardLocks = new();
         private readonly List<Text> puzzleCardActionTexts = new();
@@ -107,7 +117,7 @@ namespace ArisMonsterTrucks
             hubRoot.SetActive(true);
             playRoot.SetActive(false);
             currentPuzzlePage = (currentPuzzle - 1) / CardsPerPage;
-            RefreshPuzzleCoins();
+            RefreshPuzzleScore();
             RefreshPuzzleCards();
             RefreshPuzzlePage();
         }
@@ -135,13 +145,22 @@ namespace ArisMonsterTrucks
             playRoot.SetActive(true);
             ApplyCurrentPuzzleArt();
             BuildPieces();
+            playSafeRoot.SetAsLastSibling();
             ResetPuzzle();
+            helpButton.gameObject.SetActive(currentPuzzle == 1);
+            if (
+                currentPuzzle == 1
+                && PuzzleProgress.ShouldShowDragTutorial
+            )
+            {
+                PuzzleProgress.MarkDragTutorialSeen();
+                StartHandTutorial();
+            }
         }
 
         public void PiecePlaced(PuzzlePieceDrag piece)
         {
             placedPieces++;
-            progressText.text = placedPieces + " / 6 BITAR";
             audioSource.PlayOneShot(placementSound, 0.82f);
             if (placedPieces >= 6)
             {
@@ -149,18 +168,21 @@ namespace ArisMonsterTrucks
                     0f,
                     Time.realtimeSinceStartup - puzzleStartedAt
                 );
-                int reward = PuzzleProgress.RecordCompletion(
+                PuzzleProgress.RecordCompletion(
                     currentPuzzle,
                     elapsedSeconds
                 );
-                completionRewardText.text = "+" + reward + " PUSSELMYNT";
+                int earnedStars = PuzzleProgress.CalculateStars(elapsedSeconds);
+                GlobalStarWallet.Add(earnedStars);
+                completionAwardText.text =
+                    "+" + earnedStars + (earnedStars == 1
+                        ? " STJÄRNA"
+                        : " STJÄRNOR");
                 completionTimeText.text = "DIN TID: " + FormatTime(elapsedSeconds);
-                completionBalanceText.text =
-                    "TOTALT: " + PuzzleProgress.CoinBalance + " MYNT";
                 nextPuzzleButtonText.text = currentPuzzle < PuzzleCount
                     ? "NÄSTA PUSSEL"
                     : "PUSSELVÄLJARE";
-                RefreshPuzzleCoins();
+                RefreshPuzzleScore();
                 RefreshPuzzleCards();
                 completionPanel.transform.SetAsLastSibling();
                 completionPanel.SetActive(true);
@@ -199,8 +221,9 @@ namespace ArisMonsterTrucks
             shade.color = new Color(0.08f, 0.04f, 0.2f, 0.48f);
             Stretch(shade.rectTransform);
 
+            hubSafeRoot = CreateSafeRoot(hubRoot.transform, "Säker pusselmeny");
             Button back = CreateButton(
-                hubRoot.transform,
+                hubSafeRoot,
                 "←",
                 new Vector2(-855f, 470f),
                 new Vector2(150f, 90f),
@@ -208,10 +231,17 @@ namespace ArisMonsterTrucks
                 72
             );
             back.onClick.AddListener(() => onBack?.Invoke());
+            SetRect(
+                back.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(150f, 90f)
+            );
 
             Text title = CreateText(
                 "Titel",
-                hubRoot.transform,
+                hubSafeRoot,
                 "VÄLJ PUSSEL",
                 64,
                 RuntimeArt.Hex("#FFF3AD")
@@ -220,38 +250,32 @@ namespace ArisMonsterTrucks
             AddOutline(title, RuntimeArt.Hex("#40245F"), 5f);
 
             Image wallet = CreatePanel(
-                "Pusselmynt",
-                hubRoot.transform,
-                new Vector2(790f, 470f),
+                "Pusselpoäng",
+                hubSafeRoot,
+                Vector2.zero,
                 new Vector2(285f, 86f),
                 RuntimeArt.Hex("#FFF3AD")
             );
-            Image walletCoin = CreateImage(
-                "Pusselmyntsymbol",
-                wallet.transform,
-                RuntimeArt.GoldCoinSprite()
-            );
-            walletCoin.preserveAspect = true;
             SetRect(
-                walletCoin.rectTransform,
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(-91f, 0f),
-                new Vector2(62f, 62f)
+                wallet.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-160f, -58f),
+                new Vector2(285f, 86f)
             );
-            hubCoinText = CreateText(
-                "Pusselsaldo",
+            hubScoreText = CreateText(
+                "Pusselpoäng",
                 wallet.transform,
-                "0",
-                36,
+                "★ 0",
+                34,
                 RuntimeArt.Hex("#4A266C")
             );
             SetRect(
-                hubCoinText.rectTransform,
+                hubScoreText.rectTransform,
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
-                new Vector2(38f, 0f),
-                new Vector2(150f, 70f)
+                Vector2.zero,
+                new Vector2(250f, 70f)
             );
 
             float[] cardPositions = { -600f, 0f, 600f };
@@ -277,7 +301,7 @@ namespace ArisMonsterTrucks
             }
 
             previousPuzzlePageButton = CreateButton(
-                hubRoot.transform,
+                hubSafeRoot,
                 "‹",
                 new Vector2(-895f, -35f),
                 new Vector2(82f, 130f),
@@ -288,7 +312,7 @@ namespace ArisMonsterTrucks
                 () => ChangePuzzlePage(-1)
             );
             nextPuzzlePageButton = CreateButton(
-                hubRoot.transform,
+                hubSafeRoot,
                 "›",
                 new Vector2(895f, -35f),
                 new Vector2(82f, 130f),
@@ -300,7 +324,7 @@ namespace ArisMonsterTrucks
             );
             puzzlePageText = CreateText(
                 "Pusselsida",
-                hubRoot.transform,
+                hubSafeRoot,
                 "",
                 27,
                 RuntimeArt.Hex("#FFF3AD")
@@ -407,60 +431,175 @@ namespace ArisMonsterTrucks
             puzzleBackground = CreateImage(
                 "Pusselbakgrund",
                 playRoot.transform,
-                RuntimeArt.LoadSprite("Art/Puzzles/skogsvanner_puzzle")
+                null
             );
             puzzleBackground.type = Image.Type.Simple;
             puzzleBackground.preserveAspect = false;
+            puzzleBackground.color = RuntimeArt.Hex("#61C8D9");
             Stretch(puzzleBackground.rectTransform);
-            Image shade = CreateImage("Pusseltoning", playRoot.transform, null);
-            shade.color = new Color(0.12f, 0.07f, 0.2f, 0.42f);
-            Stretch(shade.rectTransform);
 
-            Button back = CreateButton(
+            Image leftRack = CreatePanel(
+                "Vänster bitfält",
                 playRoot.transform,
+                new Vector2(-SideRackX, BoardPosition.y),
+                new Vector2(250f, BoardSize.y + 36f),
+                RuntimeArt.Hex("#FFF0C2")
+            );
+            leftRack.raycastTarget = false;
+            Image rightRack = CreatePanel(
+                "Höger bitfält",
+                playRoot.transform,
+                new Vector2(SideRackX, BoardPosition.y),
+                new Vector2(250f, BoardSize.y + 36f),
+                RuntimeArt.Hex("#FFF0C2")
+            );
+            rightRack.raycastTarget = false;
+
+            playSafeRoot = CreateSafeRoot(playRoot.transform, "Säker pussel-HUD");
+            Button back = CreateButton(
+                playSafeRoot,
                 "←",
-                new Vector2(-855f, 470f),
+                Vector2.zero,
                 new Vector2(150f, 90f),
                 RuntimeArt.Hex("#7A5AA6"),
                 72
             );
             back.onClick.AddListener(ShowHub);
-
-            puzzleTitleText = CreateText(
-                "Pusseltitel",
-                playRoot.transform,
-                "SKOGSVÄNNERNA",
-                54,
-                Color.white
+            SetRect(
+                back.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(150f, 90f)
             );
-            SetRect(puzzleTitleText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -58f), new Vector2(850f, 90f));
-            AddOutline(puzzleTitleText, RuntimeArt.Hex("#40245F"), 4f);
 
-            Image counter = CreatePanel(
-                "Biträknare",
-                playRoot.transform,
-                new Vector2(780f, 470f),
-                new Vector2(250f, 86f),
+            Image profile = CreatePanel(
+                "Spelarprofil",
+                playSafeRoot,
+                Vector2.zero,
+                new Vector2(330f, 90f),
                 RuntimeArt.Hex("#FFF3AD")
             );
-            progressText = CreateText("Antal bitar", counter.transform, "0 / 6 BITAR", 32, RuntimeArt.Hex("#4A266C"));
-            Stretch(progressText.rectTransform);
-
-            Image playWallet = CreatePanel(
-                "Pusselmynt under spel",
-                playRoot.transform,
-                new Vector2(780f, 375f),
-                new Vector2(250f, 76f),
-                RuntimeArt.Hex("#FFF3AD")
+            SetRect(
+                profile.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(340f, -58f),
+                new Vector2(330f, 90f)
             );
-            puzzleCoinText = CreateText(
-                "Pusselsaldo under spel",
-                playWallet.transform,
-                "0 MYNT",
-                28,
+            Image avatar = CreateImage(
+                "Profilbild",
+                profile.transform,
+                RuntimeArt.LoadSprite("Art/Fishing/Character/head_idle")
+            );
+            avatar.preserveAspect = true;
+            avatar.raycastTarget = false;
+            SetRect(
+                avatar.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(49f, 0f),
+                new Vector2(76f, 76f)
+            );
+            Text profileName = CreateText(
+                "Profilnamn",
+                profile.transform,
+                string.IsNullOrEmpty(PlayerProfile.Username)
+                    ? "ARI"
+                    : PlayerProfile.Username.ToUpperInvariant(),
+                25,
                 RuntimeArt.Hex("#4A266C")
             );
-            Stretch(puzzleCoinText.rectTransform);
+            profileName.alignment = TextAnchor.MiddleLeft;
+            SetRect(
+                profileName.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(190f, 19f),
+                new Vector2(190f, 38f)
+            );
+            profileStarsText = CreateText(
+                "Globala stjärnor",
+                profile.transform,
+                "★ 0",
+                26,
+                RuntimeArt.Hex("#D17A00")
+            );
+            profileStarsText.alignment = TextAnchor.MiddleLeft;
+            SetRect(
+                profileStarsText.rectTransform,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(190f, -21f),
+                new Vector2(190f, 38f)
+            );
+
+            Image titlePanel = CreatePanel(
+                "Pusselrubrik",
+                playSafeRoot,
+                Vector2.zero,
+                new Vector2(500f, 90f),
+                RuntimeArt.Hex("#7A5AA6")
+            );
+            SetRect(
+                titlePanel.rectTransform,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0f, -58f),
+                new Vector2(500f, 90f)
+            );
+            puzzleTitleText = CreateText(
+                "Pusseltitel",
+                titlePanel.transform,
+                "PUSSEL",
+                50,
+                Color.white
+            );
+            Stretch(puzzleTitleText.rectTransform);
+            AddOutline(puzzleTitleText, RuntimeArt.Hex("#40245F"), 3f);
+
+            Button sound = CreateButton(
+                playSafeRoot,
+                "",
+                Vector2.zero,
+                new Vector2(170f, 90f),
+                RuntimeArt.Hex("#7A5AA6"),
+                28
+            );
+            SetRect(
+                sound.image.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-95f, -58f),
+                new Vector2(170f, 90f)
+            );
+            soundButtonText = CreateText(
+                "Text",
+                sound.transform,
+                AppPreferences.SoundEnabled ? "LJUD PÅ" : "LJUD AV",
+                27,
+                Color.white
+            );
+            Stretch(soundButtonText.rectTransform);
+            AddOutline(soundButtonText, RuntimeArt.Hex("#40245F"), 2f);
+            sound.onClick.AddListener(ToggleSound);
+
+            helpButton = CreateButton(
+                playSafeRoot,
+                "HJÄLP",
+                Vector2.zero,
+                new Vector2(170f, 90f),
+                RuntimeArt.Hex("#7A5AA6"),
+                27
+            );
+            SetRect(
+                helpButton.image.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-280f, -58f),
+                new Vector2(170f, 90f)
+            );
+            helpButton.onClick.AddListener(StartHandTutorial);
 
             Image board = CreatePanel(
                 "Pusselram",
@@ -479,17 +618,152 @@ namespace ArisMonsterTrucks
             puzzleGuide.color = new Color(1f, 1f, 1f, 0.32f);
             SetRect(puzzleGuide.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, BoardSize);
 
-            Image tray = CreatePanel(
+            GameObject pieceLayer = new(
                 "Pusselbitar",
-                playRoot.transform,
-                new Vector2(0f, -435f),
-                new Vector2(1780f, 190f),
-                new Color(1f, 0.94f, 0.77f, 0.94f)
+                typeof(RectTransform)
             );
-            Text trayTitle = CreateText("Brickrubrik", tray.transform, "DRA UPP BITARNA TILL BORDET", 26, RuntimeArt.Hex("#5A376E"));
-            SetRect(trayTitle.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -23f), new Vector2(900f, 42f));
+            pieceLayer.transform.SetParent(playRoot.transform, false);
+            pieceRoot = pieceLayer.GetComponent<RectTransform>();
+            Stretch(pieceRoot);
+
+            Image playScore = CreatePanel(
+                "Stjärnpoäng under pussel",
+                playSafeRoot,
+                Vector2.zero,
+                new Vector2(235f, 82f),
+                RuntimeArt.Hex("#FFF3AD")
+            );
+            SetRect(
+                playScore.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(
+                    0f,
+                    BoardPosition.y + (BoardSize.y + 36f) * 0.5f
+                ),
+                new Vector2(235f, 82f)
+            );
+            playScoreText = CreateText(
+                "Stjärnpoäng",
+                playScore.transform,
+                "★ 0",
+                34,
+                RuntimeArt.Hex("#4A266C")
+            );
+            Stretch(playScoreText.rectTransform);
+
+            Image instruction = CreatePanel(
+                "Pusselinstruktion",
+                playSafeRoot,
+                Vector2.zero,
+                new Vector2(1040f, 58f),
+                RuntimeArt.Hex("#6A438D")
+            );
+            SetRect(
+                instruction.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0f, -470f),
+                new Vector2(1040f, 58f)
+            );
+            Text instructionText = CreateText(
+                "Text",
+                instruction.transform,
+                "Dra en bit från sidan och släpp den på rätt plats!",
+                27,
+                Color.white
+            );
+            Stretch(instructionText.rectTransform);
+
+            tutorialHandOpen = RuntimeArt.LoadSprite(
+                "Art/UI/Tutorial/drag_hand_open"
+            );
+            tutorialHandPinched = RuntimeArt.LoadSprite(
+                "Art/UI/Tutorial/drag_hand_pinched"
+            );
+            tutorialHand = CreateImage(
+                "Animerad hjälphand",
+                playRoot.transform,
+                tutorialHandOpen
+            );
+            tutorialHand.preserveAspect = true;
+            tutorialHand.raycastTarget = false;
+            SetRect(
+                tutorialHand.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                Vector2.zero,
+                new Vector2(210f, 210f)
+            );
+            tutorialHand.gameObject.SetActive(false);
 
             BuildCompletionPanel();
+            playSafeRoot.SetAsLastSibling();
+        }
+
+        private void StartHandTutorial()
+        {
+            if (currentPuzzle != 1 || !playRoot.activeInHierarchy)
+            {
+                return;
+            }
+
+            StopHandTutorial();
+            tutorialRoutine = StartCoroutine(ShowFirstPieceHandTutorial());
+        }
+
+        private void StopHandTutorial()
+        {
+            if (tutorialRoutine != null)
+            {
+                StopCoroutine(tutorialRoutine);
+                tutorialRoutine = null;
+            }
+            if (tutorialHand != null)
+            {
+                tutorialHand.gameObject.SetActive(false);
+            }
+            foreach (PuzzlePieceDrag piece in
+                playRoot.GetComponentsInChildren<PuzzlePieceDrag>(true))
+            {
+                piece.CancelTutorial();
+            }
+        }
+
+        private IEnumerator ShowFirstPieceHandTutorial()
+        {
+            yield return new WaitForSecondsRealtime(0.4f);
+            PuzzlePieceDrag[] pieces =
+                pieceRoot.GetComponentsInChildren<PuzzlePieceDrag>(true);
+            PuzzlePieceDrag tutorialPiece = Array.Find(
+                pieces,
+                piece => !piece.IsPlaced
+            );
+            if (tutorialPiece != null)
+            {
+                yield return tutorialPiece.PlayHandTutorial(
+                    tutorialHand,
+                    tutorialHandOpen,
+                    tutorialHandPinched
+                );
+            }
+            tutorialRoutine = null;
+        }
+
+        public void PlayTutorialPickupSound()
+        {
+            if (AppPreferences.SoundEnabled)
+            {
+                audioSource.PlayOneShot(placementSound, 0.48f);
+            }
+        }
+
+        public void PlayTutorialPlacementSound()
+        {
+            if (AppPreferences.SoundEnabled)
+            {
+                audioSource.PlayOneShot(placementSound, 0.82f);
+            }
         }
 
         private void BuildPieces()
@@ -500,14 +774,14 @@ namespace ArisMonsterTrucks
             }
 
             float scale = BoardSize.x / SourceWidth;
-            float[] trayXs = { -700f, -420f, -140f, 140f, 420f, 700f };
+            float[] sideYs = { 190f, -45f, -280f };
             string artPrefix = PuzzlePrefixes[currentPuzzle - 1];
             for (int i = 0; i < pieceCrops.Length; i++)
             {
                 Vector4 crop = pieceCrops[i];
                 Image pieceImage = CreateImage(
                     "Pusselbit " + (i + 1),
-                    playRoot.transform,
+                    pieceRoot,
                     RuntimeArt.LoadSprite(
                         "Art/Puzzles/" + artPrefix + "_piece_" + (i + 1)
                     )
@@ -519,17 +793,28 @@ namespace ArisMonsterTrucks
                     BoardPosition.x - BoardSize.x * 0.5f + (crop.x + crop.z * 0.5f) * scale,
                     BoardPosition.y + BoardSize.y * 0.5f - (crop.y + crop.w * 0.5f) * scale
                 );
-                Vector2 trayPosition = new(trayXs[i], -455f);
-                SetRect(pieceImage.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), trayPosition, pieceSize);
-                pieceImage.rectTransform.localScale = Vector3.one * TrayPieceScale;
+                bool leftSide = i < 3;
+                Vector2 startPosition = new(
+                    leftSide ? -SideRackX : SideRackX,
+                    sideYs[i % 3]
+                );
+                SetRect(
+                    pieceImage.rectTransform,
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(0.5f, 0.5f),
+                    startPosition,
+                    pieceSize
+                );
+                pieceImage.rectTransform.localScale =
+                    Vector3.one * SidePieceScale;
 
                 PuzzlePieceDrag drag = pieceImage.gameObject.AddComponent<PuzzlePieceDrag>();
                 drag.Initialize(
                     this,
                     playRect,
-                    trayPosition,
+                    startPosition,
                     targetPosition,
-                    TrayPieceScale,
+                    SidePieceScale,
                     Mathf.Clamp(Mathf.Min(pieceSize.x, pieceSize.y) * 0.42f, 155f, 205f)
                 );
             }
@@ -577,15 +862,15 @@ namespace ArisMonsterTrucks
             Text stars = CreateText("Stjärnor", card.transform, "★  ★  ★", 76, RuntimeArt.Hex("#F2A900"));
             SetRect(stars.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(300f, 175f), new Vector2(430f, 90f));
 
-            completionRewardText = CreateText(
-                "Belöning",
+            completionAwardText = CreateText(
+                "Uppmuntran",
                 card.transform,
-                "+25 PUSSELMYNT",
-                46,
+                "+1 STJÄRNA",
+                44,
                 RuntimeArt.Hex("#D17A00")
             );
             SetRect(
-                completionRewardText.rectTransform,
+                completionAwardText.rectTransform,
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
                 new Vector2(300f, 80f),
@@ -603,21 +888,6 @@ namespace ArisMonsterTrucks
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
                 new Vector2(300f, 10f),
-                new Vector2(430f, 58f)
-            );
-
-            completionBalanceText = CreateText(
-                "Totalt pusselsaldo",
-                card.transform,
-                "TOTALT: 0 MYNT",
-                31,
-                RuntimeArt.Hex("#5A376E")
-            );
-            SetRect(
-                completionBalanceText.rectTransform,
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(300f, -55f),
                 new Vector2(430f, 58f)
             );
 
@@ -650,35 +920,47 @@ namespace ArisMonsterTrucks
             string artPath =
                 "Art/Puzzles/" + PuzzlePrefixes[puzzleIndex] + "_puzzle";
             Sprite art = RuntimeArt.LoadSprite(artPath);
-            puzzleBackground.sprite = art;
             puzzleGuide.sprite = art;
             completionPreview.sprite = art;
-            puzzleTitleText.text = PuzzleTitles[puzzleIndex];
         }
 
         private void ResetPuzzle()
         {
+            StopHandTutorial();
             placedPieces = 0;
             puzzleStartedAt = Time.realtimeSinceStartup;
-            progressText.text = "0 / 6 BITAR";
             completionPanel.SetActive(false);
-            RefreshPuzzleCoins();
+            RefreshPuzzleScore();
             foreach (PuzzlePieceDrag piece in playRoot.GetComponentsInChildren<PuzzlePieceDrag>(true))
             {
                 piece.ResetPiece();
             }
         }
 
-        private void RefreshPuzzleCoins()
+        private void RefreshPuzzleScore()
         {
-            string balance = PuzzleProgress.CoinBalance.ToString();
-            if (hubCoinText != null)
+            if (hubScoreText != null)
             {
-                hubCoinText.text = balance;
+                hubScoreText.text = "★ " + GlobalStarWallet.Balance;
             }
-            if (puzzleCoinText != null)
+            if (playScoreText != null)
             {
-                puzzleCoinText.text = balance + " MYNT";
+                playScoreText.text = "★ " + GlobalStarWallet.Balance;
+            }
+            if (profileStarsText != null)
+            {
+                profileStarsText.text = "★ " + GlobalStarWallet.Balance;
+            }
+        }
+
+        private void ToggleSound()
+        {
+            AppPreferences.SoundEnabled = !AppPreferences.SoundEnabled;
+            if (soundButtonText != null)
+            {
+                soundButtonText.text = AppPreferences.SoundEnabled
+                    ? "LJUD PÅ"
+                    : "LJUD AV";
             }
         }
 
@@ -949,6 +1231,19 @@ namespace ArisMonsterTrucks
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
         }
+
+        private static RectTransform CreateSafeRoot(
+            Transform parent,
+            string name
+        )
+        {
+            GameObject safe = new(name, typeof(RectTransform));
+            safe.transform.SetParent(parent, false);
+            RectTransform rect = safe.GetComponent<RectTransform>();
+            Stretch(rect);
+            safe.AddComponent<SafeAreaFitter>();
+            return rect;
+        }
     }
 
     public sealed class PuzzlePieceDrag :
@@ -965,6 +1260,8 @@ namespace ArisMonsterTrucks
         private float trayScale;
         private float snapDistance;
         private bool placed;
+
+        public bool IsPlaced => placed;
 
         public void Initialize(
             PuzzleGameController owner,
@@ -990,6 +1287,112 @@ namespace ArisMonsterTrucks
             rect.anchoredPosition = trayPosition;
             rect.localScale = Vector3.one * trayScale;
             GetComponent<Image>().raycastTarget = true;
+        }
+
+        public IEnumerator PlayHandTutorial(
+            Image hand,
+            Sprite openHand,
+            Sprite pinchedHand
+        )
+        {
+            if (placed || hand == null)
+            {
+                yield break;
+            }
+
+            Image image = GetComponent<Image>();
+            image.raycastTarget = false;
+            RectTransform handRect = hand.rectTransform;
+            hand.sprite = openHand;
+            hand.color = new Color(1f, 1f, 1f, 0f);
+            handRect.anchoredPosition = trayPosition + new Vector2(25f, 180f);
+            hand.gameObject.SetActive(true);
+
+            float elapsed = 0f;
+            const float flyDuration = 0.55f;
+            Vector2 hoverPosition = trayPosition + new Vector2(25f, 55f);
+            while (elapsed < flyDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float progress = Mathf.SmoothStep(
+                    0f,
+                    1f,
+                    Mathf.Clamp01(elapsed / flyDuration)
+                );
+                handRect.anchoredPosition = Vector2.Lerp(
+                    trayPosition + new Vector2(25f, 180f),
+                    hoverPosition,
+                    progress
+                );
+                hand.color = new Color(1f, 1f, 1f, progress);
+                yield return null;
+            }
+
+            yield return new WaitForSecondsRealtime(0.25f);
+            hand.sprite = pinchedHand;
+            controller.PlayTutorialPickupSound();
+            yield return new WaitForSecondsRealtime(0.22f);
+
+            elapsed = 0f;
+            const float dragDuration = 1.05f;
+            Vector2 handTarget = targetPosition + new Vector2(25f, 55f);
+            while (elapsed < dragDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float progress = Mathf.SmoothStep(
+                    0f,
+                    1f,
+                    Mathf.Clamp01(elapsed / dragDuration)
+                );
+                rect.anchoredPosition = Vector2.Lerp(
+                    trayPosition,
+                    targetPosition,
+                    progress
+                );
+                rect.localScale = Vector3.one
+                    * Mathf.Lerp(trayScale, 1f, progress);
+                handRect.anchoredPosition = Vector2.Lerp(
+                    hoverPosition,
+                    handTarget,
+                    progress
+                );
+                yield return null;
+            }
+
+            controller.PlayTutorialPlacementSound();
+            yield return new WaitForSecondsRealtime(0.45f);
+            hand.sprite = openHand;
+            elapsed = 0f;
+            const float fadeDuration = 0.3f;
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float progress = Mathf.Clamp01(elapsed / fadeDuration);
+                hand.color = new Color(1f, 1f, 1f, 1f - progress);
+                yield return null;
+            }
+
+            hand.gameObject.SetActive(false);
+            ResetPiece();
+        }
+
+        public void CancelTutorial()
+        {
+            if (rect == null)
+            {
+                return;
+            }
+            if (placed)
+            {
+                return;
+            }
+            rect.anchoredPosition = trayPosition;
+            rect.localScale = Vector3.one * trayScale;
+            Image image = GetComponent<Image>();
+            if (image != null)
+            {
+                image.raycastTarget = !placed;
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)

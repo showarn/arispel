@@ -53,10 +53,13 @@ namespace ArisMonsterTrucks
         private GameObject hubRoot;
         private GameObject playRoot;
         private GameObject completionPanel;
+        private RectTransform hubSafeRoot;
+        private RectTransform playSafeRoot;
         private Text playTitle;
         private Text movesText;
         private Text bestText;
         private Text completionMovesText;
+        private Text completionStarsText;
         private Text nextMemoryButtonText;
         private AudioSource audioSource;
         private AudioClip flipSound;
@@ -133,8 +136,9 @@ namespace ArisMonsterTrucks
             shade.color = new Color(0.08f, 0.04f, 0.2f, 0.48f);
             Stretch(shade.rectTransform);
 
+            hubSafeRoot = CreateSafeRoot(hubRoot.transform, "Säker memorymeny");
             Button back = CreateButton(
-                hubRoot.transform,
+                hubSafeRoot,
                 "←",
                 new Vector2(-855f, 470f),
                 new Vector2(150f, 90f),
@@ -142,10 +146,17 @@ namespace ArisMonsterTrucks
                 72
             );
             back.onClick.AddListener(() => onBack?.Invoke());
+            SetRect(
+                back.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(150f, 90f)
+            );
 
             Text title = CreateText(
                 "Titel",
-                hubRoot.transform,
+                hubSafeRoot,
                 "VÄLJ MEMORY",
                 64,
                 RuntimeArt.Hex("#FFF3AD")
@@ -291,17 +302,25 @@ namespace ArisMonsterTrucks
             shade.color = new Color(0.06f, 0.04f, 0.18f, 0.62f);
             Stretch(shade.rectTransform);
 
+            playSafeRoot = CreateSafeRoot(playRoot.transform, "Säker memory-HUD");
             Button back = CreateButton(
-                playRoot.transform,
+                playSafeRoot,
                 "←",
-                new Vector2(-855f, 470f),
+                Vector2.zero,
                 new Vector2(150f, 90f),
                 RuntimeArt.Hex("#7A5AA6"),
                 72
             );
             back.onClick.AddListener(ShowHub);
+            SetRect(
+                back.image.rectTransform,
+                new Vector2(0f, 0f),
+                new Vector2(0f, 0f),
+                new Vector2(85f, 62f),
+                new Vector2(150f, 90f)
+            );
 
-            playTitle = CreateText("Memorytitel", playRoot.transform, LevelTitles[0], 60, RuntimeArt.Hex("#FFF3AD"));
+            playTitle = CreateText("Memorytitel", playSafeRoot, LevelTitles[0], 60, RuntimeArt.Hex("#FFF3AD"));
             SetRect(playTitle.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -60f), new Vector2(850f, 100f));
             AddOutline(playTitle, RuntimeArt.Hex("#40245F"), 5f);
 
@@ -354,8 +373,14 @@ namespace ArisMonsterTrucks
             Image card = CreatePanel("Memoryresultat", shade.transform, Vector2.zero, new Vector2(900f, 600f), RuntimeArt.Hex("#FFF3AD"));
             Text title = CreateText("Klart", card.transform, "MEMORY KLART!", 68, RuntimeArt.Hex("#4A266C"));
             SetRect(title.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 190f), new Vector2(760f, 100f));
-            Text stars = CreateText("Stjärnor", card.transform, "★  ★  ★", 82, RuntimeArt.Hex("#F2A900"));
-            SetRect(stars.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 70f), new Vector2(650f, 100f));
+            completionStarsText = CreateText(
+                "Stjärnor",
+                card.transform,
+                "+1 STJÄRNA",
+                54,
+                RuntimeArt.Hex("#F2A900")
+            );
+            SetRect(completionStarsText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 70f), new Vector2(650f, 100f));
             completionMovesText = CreateText("Resultatdrag", card.transform, "KLART PÅ 0 DRAG", 40, RuntimeArt.Hex("#5A376E"));
             SetRect(completionMovesText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -35f), new Vector2(700f, 70f));
             Button again = CreateButton(card.transform, "SPELA IGEN", new Vector2(-205f, -190f), new Vector2(360f, 105f), RuntimeArt.Hex("#FF6B35"), 36);
@@ -538,6 +563,12 @@ namespace ArisMonsterTrucks
         private void CompleteGame()
         {
             MemoryProgress.RecordCompletion(currentLevel, moves);
+            int earnedStars = MemoryProgress.CalculateStars(moves);
+            GlobalStarWallet.Add(earnedStars);
+            completionStarsText.text =
+                "+" + earnedStars + (
+                    earnedStars == 1 ? " STJÄRNA" : " STJÄRNOR"
+                );
             completionMovesText.text = "KLART PÅ " + moves + " DRAG";
             nextMemoryButtonText.text = currentLevel < LevelCount
                 ? "NÄSTA MEMORY"
@@ -732,6 +763,19 @@ namespace ArisMonsterTrucks
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
         }
+
+        private static RectTransform CreateSafeRoot(
+            Transform parent,
+            string name
+        )
+        {
+            GameObject safe = new(name, typeof(RectTransform));
+            safe.transform.SetParent(parent, false);
+            RectTransform rect = safe.GetComponent<RectTransform>();
+            Stretch(rect);
+            safe.AddComponent<SafeAreaFitter>();
+            return rect;
+        }
     }
 
     public static class MemoryProgress
@@ -768,6 +812,20 @@ namespace ArisMonsterTrucks
                 PlayerPrefs.GetInt(CompletionKey(levelNumber), 0) + 1
             );
             PlayerPrefs.Save();
+        }
+
+        public static int CalculateStars(int moves)
+        {
+            moves = Mathf.Max(0, moves);
+            if (moves <= 9)
+            {
+                return 4;
+            }
+            if (moves <= 13)
+            {
+                return 3;
+            }
+            return moves <= 18 ? 2 : 1;
         }
 
         public static void Reset()

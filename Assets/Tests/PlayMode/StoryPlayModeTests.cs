@@ -19,6 +19,8 @@ namespace ArisMonsterTrucks.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            AppPreferences.SoundEnabled = true;
+            AppPreferences.StoryTextVisible = true;
             root = new GameObject("Story test root", typeof(RectTransform));
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             story = Resources.Load<StoryDefinition>("Stories/lilla-lumi");
@@ -63,7 +65,7 @@ namespace ArisMonsterTrucks.Tests
         }
 
         [UnityTest]
-        public IEnumerator StoryChromeMatchesTheLillaLumiReferenceLayout()
+        public IEnumerator StoryChromeUsesSharedSafeBottomControlBar()
         {
             RectTransform restart = FindChildByName(
                 controller.transform,
@@ -72,10 +74,6 @@ namespace ArisMonsterTrucks.Tests
             RectTransform previous = FindChildByName(
                 controller.transform,
                 "‹ knapp"
-            ).GetComponent<RectTransform>();
-            RectTransform playPause = FindChildByName(
-                controller.transform,
-                " knapp"
             ).GetComponent<RectTransform>();
             RectTransform next = FindChildByName(
                 controller.transform,
@@ -86,27 +84,44 @@ namespace ArisMonsterTrucks.Tests
                 "Sidnummer"
             ).GetComponent<RectTransform>();
 
-            Assert.AreEqual(new Vector2(760f, 468f), restart.anchoredPosition);
-            Assert.AreEqual(new Vector2(325f, -445f), previous.anchoredPosition);
-            Assert.AreEqual(new Vector2(490f, -445f), playPause.anchoredPosition);
-            Assert.AreEqual(new Vector2(655f, -445f), next.anchoredPosition);
-            Assert.AreEqual(
-                new Vector2(600f, -485f),
-                pageNumber.anchoredPosition
+            Transform controlBar = FindChildByName(
+                controller.transform,
+                "Gemensam nedre sagokontroll"
             );
-            Assert.IsNull(
-                FindChildByName(
-                    controller.transform,
-                    "Visa eller dölj text"
-                )
-            );
-            Assert.IsNull(
-                FindChildByName(
-                    controller.transform,
-                    "Berättarröst av eller på"
-                )
-            );
+            Assert.IsNotNull(controlBar);
+            Assert.AreEqual(0f, controlBar.GetComponent<RectTransform>().anchorMin.y);
+            Assert.AreEqual(new Vector2(-30f, 0f), previous.anchoredPosition);
+            Assert.AreEqual(new Vector2(260f, 0f), next.anchoredPosition);
+            Assert.AreEqual(new Vector2(0f, 137f), pageNumber.anchoredPosition);
+            Assert.AreEqual(new Vector2(-125f, -58f), restart.anchoredPosition);
+            Assert.IsNotNull(FindButtonByLabel("TEXT PÅ"));
+            Assert.IsNotNull(FindButtonByLabel("LJUD PÅ"));
             yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator TextAndNarrationTogglesPersistWithoutRestartingPage()
+        {
+            controller.SeekToPage(2, true);
+            yield return new WaitForSecondsRealtime(0.05f);
+            float beforeMute = controller.NarrationTime;
+
+            FindButtonByLabel("TEXT PÅ").onClick.Invoke();
+            Assert.IsFalse(controller.IsTextVisible);
+            Assert.AreEqual(2, controller.CurrentPageIndex);
+            Assert.IsFalse(AppPreferences.StoryTextVisible);
+
+            FindButtonByLabel("LJUD PÅ").onClick.Invoke();
+            yield return null;
+            Assert.IsFalse(controller.IsNarrationEnabled);
+            Assert.IsFalse(controller.IsNarrationPlaying);
+            Assert.AreEqual(beforeMute, controller.NarrationTime, 0.12f);
+
+            FindButtonByLabel("LJUD AV").onClick.Invoke();
+            yield return new WaitForSecondsRealtime(0.05f);
+            Assert.IsTrue(controller.IsNarrationEnabled);
+            Assert.AreEqual(2, controller.CurrentPageIndex);
+            Assert.GreaterOrEqual(controller.NarrationTime, beforeMute);
         }
 
         [UnityTest]
@@ -310,6 +325,22 @@ namespace ArisMonsterTrucks.Tests
             FrontEndController frontEnd =
                 Object.FindFirstObjectByType<FrontEndController>();
             Assert.IsNotNull(frontEnd);
+            RectTransform parentsButton = FindChildByName(
+                frontEnd.transform,
+                "FÖRÄLDRAR-knapp"
+            ).GetComponent<RectTransform>();
+            Assert.AreEqual(Vector2.one, parentsButton.anchorMin);
+            Assert.AreEqual(Vector2.one, parentsButton.anchorMax);
+            Assert.Less(parentsButton.anchoredPosition.x, 0f);
+            Assert.Less(parentsButton.anchoredPosition.y, 0f);
+
+            RectTransform dashboardNavigation = FindChildByName(
+                frontEnd.transform,
+                "Nedre sidnavigation"
+            ).GetComponent<RectTransform>();
+            Assert.AreEqual(0f, dashboardNavigation.anchorMin.y);
+            Assert.AreEqual(0f, dashboardNavigation.anchorMax.y);
+
             Transform storyCategory = FindChildByName(
                 frontEnd.transform,
                 "Sagokategori startsida"
@@ -328,6 +359,31 @@ namespace ArisMonsterTrucks.Tests
                     "Berättelsekort startsida lilla-lumi"
                 )
             );
+            Image lumiThumbnail = FindChildByName(
+                storyCategory,
+                "Lilla Lumi-förhandsvisning"
+            ).GetComponent<Image>();
+            Assert.AreSame(
+                StoryCatalog.Get("lilla-lumi").Cover,
+                lumiThumbnail.sprite
+            );
+            Assert.IsNull(
+                FindChildByName(
+                    storyCategory,
+                    "Sagoförhandsvisning 2"
+                )
+            );
+
+            RectTransform puzzlePreview = FindChildByName(
+                frontEnd.transform,
+                "Pusselbild"
+            ).GetComponent<RectTransform>();
+            RectTransform truckPreview = FindChildByName(
+                frontEnd.transform,
+                "Monstertruckbild"
+            ).GetComponent<RectTransform>();
+            Assert.AreEqual(truckPreview.sizeDelta, puzzlePreview.sizeDelta);
+            Assert.IsFalse(puzzlePreview.GetComponent<Image>().preserveAspect);
             Assert.IsNull(
                 FindChildByName(
                     frontEnd.transform,

@@ -25,6 +25,7 @@ namespace ArisMonsterTrucks
         private bool npcLoopBoostGranted;
         private bool npcSecondBoostGranted;
         private int levelNumber = 1;
+        private float raceStartedAt;
 
         public bool TrackHasLoop => track != null && track.HasLoop;
         public int LevelNumber => levelNumber;
@@ -164,7 +165,10 @@ namespace ArisMonsterTrucks
 
             if (autoDriveTest)
             {
-                Debug.Log("ARIS_AUTOTEST FINISH coins=" + coins + " npcFirst=" + npcFinished);
+                Debug.Log(
+                    "ARIS_AUTOTEST FINISH coins=" + coins
+                    + " npcFirst=" + npcFinished
+                );
             }
             raceFinished = true;
             raceRunning = false;
@@ -174,10 +178,13 @@ namespace ArisMonsterTrucks
             PlayerTruck.ParkForFinish();
             NpcTruck.ParkForFinish();
             CoinWallet.Add(coins);
+            float elapsedSeconds = Mathf.Max(
+                0f,
+                Time.realtimeSinceStartup - raceStartedAt
+            );
             LevelResult levelResult = LevelProgression.RecordResult(
                 levelNumber,
-                coins,
-                !npcFinished
+                elapsedSeconds
             );
             hud.ShowFinish(
                 coins,
@@ -330,6 +337,7 @@ namespace ArisMonsterTrucks
             }
 
             hud.HideCountdown();
+            raceStartedAt = Time.realtimeSinceStartup;
             raceRunning = true;
             PlayerTruck.SetControlsEnabled(true);
             NpcTruck.SetControlsEnabled(true);

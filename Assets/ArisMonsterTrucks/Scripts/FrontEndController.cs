@@ -19,6 +19,7 @@ namespace ArisMonsterTrucks
         private GameObject levelSelectRoot;
         private GameObject garageRoot;
         private Canvas canvas;
+        private RectTransform frontEndSafeRoot;
         private GameObject inventoryRoot;
         private GameObject layoutEditorRoot;
         private Text layoutToggleLabel;
@@ -127,6 +128,15 @@ namespace ArisMonsterTrucks
             scaler.matchWidthOrHeight = 0.5f;
             gameObject.AddComponent<GraphicRaycaster>();
 
+            GameObject safeObject = new(
+                "Gemensam säker meny-yta",
+                typeof(RectTransform)
+            );
+            safeObject.transform.SetParent(transform, false);
+            frontEndSafeRoot = safeObject.GetComponent<RectTransform>();
+            Stretch(frontEndSafeRoot);
+            safeObject.AddComponent<SafeAreaFitter>();
+
             if (FindFirstObjectByType<EventSystem>() == null)
             {
                 GameObject eventObject = new("Menyns pekskärmssystem");
@@ -161,7 +171,7 @@ namespace ArisMonsterTrucks
                 ShowStoryHub
             );
             parentalGate = ParentalGateController.Create(
-                transform,
+                frontEndSafeRoot,
                 font,
                 OnInitialParentalSetupCompleted,
                 OnParentalSettingsChanged
@@ -300,7 +310,7 @@ namespace ArisMonsterTrucks
         private void BuildLogin()
         {
             loginRoot = new GameObject("Användarnamn", typeof(RectTransform));
-            loginRoot.transform.SetParent(transform, false);
+            loginRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(loginRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -412,7 +422,7 @@ namespace ArisMonsterTrucks
         private void BuildDashboard()
         {
             dashboardRoot = new GameObject("Speldashboard", typeof(RectTransform));
-            dashboardRoot.transform.SetParent(transform, false);
+            dashboardRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(dashboardRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -506,7 +516,7 @@ namespace ArisMonsterTrucks
                 RuntimeArt.LoadSprite("Art/Puzzles/skogsvanner_puzzle")
             );
             puzzleImage.type = Image.Type.Simple;
-            puzzleImage.preserveAspect = true;
+            puzzleImage.preserveAspect = false;
             SetRect(puzzleImage.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 90f), new Vector2(380f, 280f));
             Text puzzleTitle = CreateText("Spelnamn", puzzleGameButton.transform, "PUSSEL", 46, Color.white);
             SetRect(puzzleTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -130f), new Vector2(390f, 80f));
@@ -533,7 +543,7 @@ namespace ArisMonsterTrucks
                 RuntimeArt.LoadSprite("Art/Puzzles/korall_puzzle")
             );
             memoryImage.type = Image.Type.Simple;
-            memoryImage.preserveAspect = true;
+            memoryImage.preserveAspect = false;
             SetRect(memoryImage.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 90f), new Vector2(380f, 280f));
             Text memoryTitle = CreateText("Spelnamn", memoryGameButton.transform, "MEMORY", 46, Color.white);
             SetRect(memoryTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -130f), new Vector2(390f, 80f));
@@ -575,10 +585,23 @@ namespace ArisMonsterTrucks
 
             CreateStoryDashboardCategory(stories);
 
+            GameObject navigationObject = new(
+                "Nedre sidnavigation",
+                typeof(RectTransform)
+            );
+            navigationObject.transform.SetParent(dashboardRoot.transform, false);
+            SetRect(
+                navigationObject.GetComponent<RectTransform>(),
+                new Vector2(0.5f, 0f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0f, 72f),
+                new Vector2(270f, 104f)
+            );
+
             previousDashboardPageButton = CreateButton(
-                dashboardRoot.transform,
+                navigationObject.transform,
                 "‹",
-                new Vector2(-850f, -455f),
+                new Vector2(-62f, 0f),
                 new Vector2(90f, 100f),
                 RuntimeArt.Hex("#7A5AA6"),
                 60
@@ -589,9 +612,9 @@ namespace ArisMonsterTrucks
                 )
             );
             nextDashboardPageButton = CreateButton(
-                dashboardRoot.transform,
+                navigationObject.transform,
                 "›",
-                new Vector2(850f, -455f),
+                new Vector2(62f, 0f),
                 new Vector2(90f, 100f),
                 RuntimeArt.Hex("#7A5AA6"),
                 60
@@ -606,10 +629,17 @@ namespace ArisMonsterTrucks
             Button parents = CreateButton(
                 dashboardRoot.transform,
                 "FÖRÄLDRAR",
-                new Vector2(780f, 470f),
+                Vector2.zero,
                 new Vector2(300f, 76f),
                 RuntimeArt.Hex("#66507F"),
                 27
+            );
+            SetRect(
+                parents.image.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-175f, -58f),
+                new Vector2(300f, 76f)
             );
             parents.onClick.AddListener(() => parentalGate?.ShowUnlock());
         }
@@ -714,34 +744,20 @@ namespace ArisMonsterTrucks
             card.gameObject.name = "Sagokategori startsida";
             PlaceDashboardCard(card, position);
 
-            const float previewWidth = 380f;
-            float imageWidth = previewWidth / Mathf.Min(
-                2,
-                validStories.Count
+            Image preview = CreateImage(
+                "Lilla Lumi-förhandsvisning",
+                card.transform,
+                validStories[0].Cover
             );
-            int previewCount = Mathf.Min(2, validStories.Count);
-            for (int index = 0; index < previewCount; index++)
-            {
-                Image preview = CreateImage(
-                    "Sagoförhandsvisning " + (index + 1),
-                    card.transform,
-                    validStories[index].Cover
-                );
-                preview.type = Image.Type.Simple;
-                preview.preserveAspect = false;
-                float previewX =
-                    previewCount == 1
-                        ? 0f
-                        : -previewWidth * 0.5f
-                            + imageWidth * (index + 0.5f);
-                SetRect(
-                    preview.rectTransform,
-                    new Vector2(0.5f, 0.5f),
-                    new Vector2(0.5f, 0.5f),
-                    new Vector2(previewX, 90f),
-                    new Vector2(imageWidth, 280f)
-                );
-            }
+            preview.type = Image.Type.Simple;
+            preview.preserveAspect = false;
+            SetRect(
+                preview.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0f, 90f),
+                new Vector2(380f, 280f)
+            );
 
             Text storyTitle = CreateText(
                 "Kategorinamn",
@@ -785,7 +801,7 @@ namespace ArisMonsterTrucks
                 "Berättelser",
                 typeof(RectTransform)
             );
-            storyHubRoot.transform.SetParent(transform, false);
+            storyHubRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(storyHubRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -933,10 +949,15 @@ namespace ArisMonsterTrucks
 
         private void UpdateDashboardPageControls(int page)
         {
-            previousDashboardPageButton?.gameObject.SetActive(page > 0);
-            nextDashboardPageButton?.gameObject.SetActive(
-                page < dashboardPageCount - 1
-            );
+            if (previousDashboardPageButton != null)
+            {
+                previousDashboardPageButton.interactable = page > 0;
+            }
+            if (nextDashboardPageButton != null)
+            {
+                nextDashboardPageButton.interactable =
+                    page < dashboardPageCount - 1;
+            }
         }
 
         private GameObject CreateParentLockOverlay(Transform parent)
@@ -986,7 +1007,7 @@ namespace ArisMonsterTrucks
         private void BuildMainMenu()
         {
             menuRoot = new GameObject("Startskärm", typeof(RectTransform));
-            menuRoot.transform.SetParent(transform, false);
+            menuRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(menuRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -1071,7 +1092,7 @@ namespace ArisMonsterTrucks
         private void BuildLevelSelect()
         {
             levelSelectRoot = new GameObject("Banväljare", typeof(RectTransform));
-            levelSelectRoot.transform.SetParent(transform, false);
+            levelSelectRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(levelSelectRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -1530,7 +1551,7 @@ namespace ArisMonsterTrucks
         private void BuildGarage()
         {
             garageRoot = new GameObject("Garage", typeof(RectTransform));
-            garageRoot.transform.SetParent(transform, false);
+            garageRoot.transform.SetParent(frontEndSafeRoot, false);
             Stretch(garageRoot.GetComponent<RectTransform>());
 
             Image background = CreateImage(
@@ -2963,6 +2984,19 @@ namespace ArisMonsterTrucks
             Image image = imageObject.AddComponent<Image>();
             image.sprite = sprite;
             image.type = sprite == null ? Image.Type.Simple : Image.Type.Sliced;
+            if (
+                name.IndexOf(
+                    "bakgrund",
+                    System.StringComparison.OrdinalIgnoreCase
+                ) >= 0
+                || name.IndexOf(
+                    "toning",
+                    System.StringComparison.OrdinalIgnoreCase
+                ) >= 0
+            )
+            {
+                imageObject.AddComponent<SafeAreaFullBleed>();
+            }
             return image;
         }
 

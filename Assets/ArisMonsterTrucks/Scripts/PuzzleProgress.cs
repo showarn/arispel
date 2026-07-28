@@ -7,14 +7,25 @@ namespace ArisMonsterTrucks
         private const string CoinBalanceKey = "puzzle.v1.coins";
         private const string CompletionCountKey = "puzzle.v1.completions";
         private const string BestTimeKey = "puzzle.v1.bestTimeSeconds";
+        private const string DragTutorialSeenKey =
+            "puzzle.v1.dragTutorialSeen";
         private const float FullRewardTime = 30f;
         private const float MinimumRewardTime = 240f;
         private const int MinimumReward = 25;
         private const int MaximumReward = 250;
         private const int PuzzleCount = 9;
 
-        public static int CoinBalance =>
+        public static int Score =>
             Mathf.Max(0, PlayerPrefs.GetInt(CoinBalanceKey, 0));
+
+        public static bool ShouldShowDragTutorial =>
+            PlayerPrefs.GetInt(DragTutorialSeenKey, 0) != 1;
+
+        public static void MarkDragTutorialSeen()
+        {
+            PlayerPrefs.SetInt(DragTutorialSeenKey, 1);
+            PlayerPrefs.Save();
+        }
 
         public static int CompletionCount(int puzzleNumber)
         {
@@ -55,7 +66,7 @@ namespace ArisMonsterTrucks
             ) * 5;
             reward = Mathf.Clamp(reward, MinimumReward, MaximumReward);
 
-            PlayerPrefs.SetInt(CoinBalanceKey, CoinBalance + reward);
+            PlayerPrefs.SetInt(CoinBalanceKey, Score + reward);
             PlayerPrefs.SetInt(
                 CompletionKey(puzzleNumber),
                 CompletionCount(puzzleNumber) + 1
@@ -74,11 +85,26 @@ namespace ArisMonsterTrucks
             return reward;
         }
 
+        public static int CalculateStars(float elapsedSeconds)
+        {
+            elapsedSeconds = Mathf.Max(0f, elapsedSeconds);
+            if (elapsedSeconds <= 45f)
+            {
+                return 4;
+            }
+            if (elapsedSeconds <= 90f)
+            {
+                return 3;
+            }
+            return elapsedSeconds <= 180f ? 2 : 1;
+        }
+
         public static void Reset()
         {
             PlayerPrefs.DeleteKey(CoinBalanceKey);
             PlayerPrefs.DeleteKey(CompletionCountKey);
             PlayerPrefs.DeleteKey(BestTimeKey);
+            PlayerPrefs.DeleteKey(DragTutorialSeenKey);
             for (int puzzleNumber = 2; puzzleNumber <= PuzzleCount; puzzleNumber++)
             {
                 PlayerPrefs.DeleteKey(CompletionKey(puzzleNumber));

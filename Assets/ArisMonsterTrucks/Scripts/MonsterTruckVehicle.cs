@@ -287,7 +287,6 @@ namespace ArisMonsterTrucks
                 frontSuspensionLayout
             );
 
-            CreateNameBadge(bodyObject.transform);
             SetupEngineAudio(bodyObject);
             SetupRainbowTrail(bodyObject.transform);
             visualRenderers = GetComponentsInChildren<SpriteRenderer>();

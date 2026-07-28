@@ -152,7 +152,6 @@ namespace ArisMonsterTrucks.Fishing
         private Text lureShopPageText;
         private Text floatActionText;
         private Text wormCountText;
-        private Text bonusStatsText;
         private Text catchValueText;
         private Text locationCompleteTitleText;
         private Text locationCompleteSubtitleText;
@@ -1442,31 +1441,45 @@ namespace ArisMonsterTrucks.Fishing
 
         private void BuildTopControls()
         {
+            GameObject bottomObject = new(
+                "Gemensam nedre fiske-HUD",
+                typeof(RectTransform)
+            );
+            bottomObject.transform.SetParent(safeArea, false);
+            SetRect(
+                bottomObject.GetComponent<RectTransform>(),
+                new Vector2(0.5f, 0f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0f, 82f),
+                new Vector2(1740f, 96f)
+            );
+            Transform bottomHud = bottomObject.transform;
+
             Button back = CreateButton(
-                safeArea,
+                bottomHud,
                 "←",
-                new Vector2(-845f, 455f),
-                new Vector2(150f, 96f),
-                RuntimeArt.Hex("#F4B928"),
-                68
+                new Vector2(-775f, 0f),
+                new Vector2(120f, 88f),
+                RuntimeArt.Hex("#7A5AA6"),
+                58
             );
             back.onClick.AddListener(ExitFishing);
 
             Button book = CreateButton(
-                safeArea,
+                bottomHud,
                 "FISKBOK",
-                new Vector2(-635f, 455f),
-                new Vector2(250f, 96f),
+                new Vector2(-610f, 0f),
+                new Vector2(190f, 88f),
                 RuntimeArt.Hex("#5A8CE8"),
                 30
             );
             book.onClick.AddListener(OpenFishBook);
 
             Button shop = CreateButton(
-                safeArea,
+                bottomHud,
                 "BUTIK",
-                new Vector2(-370f, 455f),
-                new Vector2(220f, 96f),
+                new Vector2(-415f, 0f),
+                new Vector2(170f, 88f),
                 RuntimeArt.Hex("#E85A96"),
                 30
             );
@@ -1474,23 +1487,23 @@ namespace ArisMonsterTrucks.Fishing
 
             Image progress = CreatePanel(
                 "Upptäckta fiskar",
-                safeArea,
-                new Vector2(0f, 455f),
-                new Vector2(330f, 88f),
+                bottomHud,
+                new Vector2(-180f, 0f),
+                new Vector2(260f, 82f),
                 RuntimeArt.Hex("#FFF3C4")
             );
             progressText = CreateText(
                 "Fiskframsteg",
                 progress.transform,
                 "FISKAR 0 / 6",
-                34,
+                29,
                 RuntimeArt.Hex("#4A3424")
             );
             Stretch(progressText.rectTransform);
 
             Image wormIcon = CreateImage(
                 "Maskikon liten",
-                safeArea,
+                bottomHud,
                 RuntimeArt.LoadSprite("Art/Fishing/UI/worm_bait")
             );
             wormIcon.preserveAspect = true;
@@ -1498,12 +1511,12 @@ namespace ArisMonsterTrucks.Fishing
                 wormIcon.rectTransform,
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
-                new Vector2(430f, 455f),
-                new Vector2(76f, 76f)
+                new Vector2(5f, 0f),
+                new Vector2(68f, 68f)
             );
             wormCountText = CreateText(
                 "Maskantal",
-                safeArea,
+                bottomHud,
                 "× 0",
                 35,
                 Color.white
@@ -1512,33 +1525,16 @@ namespace ArisMonsterTrucks.Fishing
                 wormCountText.rectTransform,
                 new Vector2(0.5f, 0.5f),
                 new Vector2(0.5f, 0.5f),
-                new Vector2(520f, 455f),
-                new Vector2(125f, 76f)
+                new Vector2(85f, 0f),
+                new Vector2(105f, 70f)
             );
             AddOutline(wormCountText, RuntimeArt.Hex("#4A3424"), 4f);
 
-            bonusStatsText = CreateText(
-                "Aktiva fiskebonusar",
-                safeArea,
-                "",
-                25,
-                RuntimeArt.Hex("#FFF3AD")
-            );
-            bonusStatsText.alignment = TextAnchor.UpperRight;
-            SetRect(
-                bonusStatsText.rectTransform,
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(690f, 320f),
-                new Vector2(360f, 170f)
-            );
-            AddOutline(bonusStatsText, RuntimeArt.Hex("#173B80"), 3f);
-
             Button sound = CreateButton(
-                safeArea,
+                bottomHud,
                 "",
-                new Vector2(820f, 455f),
-                new Vector2(190f, 96f),
+                new Vector2(680f, 0f),
+                new Vector2(190f, 88f),
                 RuntimeArt.Hex("#F4B928"),
                 32
             );
@@ -1563,15 +1559,15 @@ namespace ArisMonsterTrucks.Fishing
                 touchArea.GetComponent<RectTransform>(),
                 new Vector2(0.5f, 0f),
                 new Vector2(0.5f, 0f),
-                new Vector2(0f, 130f),
-                new Vector2(900f, 210f)
+                new Vector2(0f, 176f),
+                new Vector2(820f, 145f)
             );
 
             mainButton = CreateButton(
                 touchArea.transform,
                 "",
                 Vector2.zero,
-                new Vector2(760f, 155f),
+                new Vector2(700f, 110f),
                 RuntimeArt.Hex("#65C832"),
                 58
             );
@@ -4409,10 +4405,20 @@ namespace ArisMonsterTrucks.Fishing
             catchRarityText.color = RarityColor(selectedFish.Rarity);
             catchLengthText.text =
                 Mathf.RoundToInt(selectedLength) + " CM  •  BRA JOBBAT!";
+            int earnedStars = selectedFish.Rarity switch
+            {
+                FishRarity.Legendary => 4,
+                FishRarity.Epic => 3,
+                FishRarity.Rare => 2,
+                _ => 1
+            };
+            GlobalStarWallet.Add(earnedStars);
             catchValueText.text =
                 "BUTIKSVÄRDE "
                 + FishSalePricing.Calculate(selectedFish, selectedLength)
-                + " MYNT";
+                + " MYNT  •  +"
+                + earnedStars
+                + " ★";
             catchPopup.transform.SetAsLastSibling();
             catchPopup.SetActive(true);
             catchBounceClock = 0f;
@@ -4894,41 +4900,8 @@ namespace ArisMonsterTrucks.Fishing
         {
             if (wormCountText != null)
             {
-                FishingLureDefinition lure = FishingLureCollection.Selected;
                 int worms = FishingBaitInventory.WormCount;
-                float rodBonus = FishingRodCollection.RareChanceBonus;
-                float equipmentBonus;
-                string equipmentLabel;
-                if (lure != null)
-                {
-                    equipmentBonus = lure.RareChanceBonus;
-                    equipmentLabel = "DRAG";
-                }
-                else
-                {
-                    equipmentBonus = worms > 0
-                        ? FishingBaitInventory.RareChanceBonus
-                        : 0f;
-                    equipmentLabel = "MASK";
-                }
                 wormCountText.text = "× " + worms;
-                if (bonusStatsText != null)
-                {
-                    bonusStatsText.text =
-                        "AKTIVA BONUSAR\n"
-                        + "SPÖ  +"
-                        + Mathf.RoundToInt(rodBonus * 100f)
-                        + "%\n"
-                        + equipmentLabel
-                        + "  +"
-                        + Mathf.RoundToInt(equipmentBonus * 100f)
-                        + "%\n"
-                        + "TOTAL  +"
-                        + Mathf.RoundToInt(
-                            (rodBonus + equipmentBonus) * 100f
-                        )
-                        + "%";
-                }
             }
         }
 
