@@ -86,7 +86,7 @@ namespace ArisMonsterTrucks.Editor
             );
             PlayerSettings.companyName = "Aris Familjespel";
             PlayerSettings.productName = "Arisspel";
-            PlayerSettings.bundleVersion = "0.5.0";
+            PlayerSettings.bundleVersion = "1.0";
             if (
                 int.TryParse(
                     Environment.GetEnvironmentVariable("CM_BUILD_NUMBER"),
@@ -130,7 +130,7 @@ namespace ArisMonsterTrucks.Editor
             );
             PlayerSettings.companyName = "Aris Familjespel";
             PlayerSettings.productName = "Arisspel";
-            PlayerSettings.bundleVersion = "0.5.0";
+            PlayerSettings.bundleVersion = "1.0";
             PlayerSettings.iOS.buildNumber =
                 Environment.GetEnvironmentVariable("CM_BUILD_NUMBER") ?? "1";
             PlayerSettings.iOS.targetOSVersionString = "15.0";
