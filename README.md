@@ -65,15 +65,21 @@ Android development-APK:
 
 APK:n skapas som `Builds/Android/Arisspel.apk`.
 
-## Codemagic
+## Codemagic och TestFlight
 
-`codemagic.yaml` innehåller workflowen `unity-android-development`.
-Codemagic behöver variabelgruppen `unity_credentials` med hemligheterna:
+`codemagic.yaml` kompilerar ett lokalt exporterat Xcode-projekt, signerar det
+med App Store-profiler och skickar IPA-filen till TestFlight. Codemagic startar
+inte Unity och behöver därför inga Unity-kontouppgifter.
 
-- `UNITY_EMAIL`
-- `UNITY_SERIAL`
-- `UNITY_PASSWORD`
+Exportera först Xcode-projektet lokalt med Unity Personal:
 
-Unity kräver Plus- eller Pro-licens för molnbyggen. Workflowen kör EditMode- och
-PlayMode-tester, bygger en development-APK och återlämnar licensen i
-publiceringsfasen.
+```bash
+"/home/alex/Unity/Hub/Editor/6000.4.5f1/Editor/Unity" \
+  -batchmode -quit -projectPath "$PWD" \
+  -executeMethod ArisMonsterTrucks.Editor.ProjectBuilder.ExportIosXcodeProject \
+  -logFile -
+```
+
+Exporten paketeras som GitHub Release-filen `arisspel-ios-xcode.zip`. Codemagic
+behöver en App Store Connect-integration samt certifikat och provisioningprofil
+för `se.arisfamiljespel.arisspel`.

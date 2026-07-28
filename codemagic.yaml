@@ -1,73 +1,39 @@
 workflows:
-  unity-android-development:
-    name: Arisspel Android development
+  ios-testflight:
+    name: Arisspel iOS TestFlight
     instance_type: mac_mini_m2
-    max_build_duration: 120
+    max_build_duration: 60
+    integrations:
+      app_store_connect: codemagic
     environment:
-      unity: 6000.4.5f1
-      groups:
-        - unity_credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: se.arisfamiljespel.arisspel
       vars:
-        UNITY_PROJECT_PATH: .
-    cache:
-      cache_paths:
-        - $CM_BUILD_DIR/Library
+        XCODE_PROJECT: iOS/Unity-iPhone.xcodeproj
+        XCODE_SCHEME: Unity-iPhone
     scripts:
-      - name: Activate Unity license
+      - name: Download exported Xcode project
         script: |
-          "$UNITY_HOME/Contents/MacOS/Unity" \
-            -batchmode \
-            -quit \
-            -logFile - \
-            -serial "$UNITY_SERIAL" \
-            -username "$UNITY_EMAIL" \
-            -password "$UNITY_PASSWORD"
+          curl --fail --location \
+            --output /tmp/arisspel-ios-xcode.zip \
+            https://github.com/showarn/arispel/releases/download/ios-export-0.5.0/arisspel-ios-xcode.zip
+          unzip -q /tmp/arisspel-ios-xcode.zip -d "$CM_BUILD_DIR"
 
-      - name: Run EditMode tests
-        script: |
-          "$UNITY_HOME/Contents/MacOS/Unity" \
-            -batchmode \
-            -nographics \
-            -projectPath "$UNITY_PROJECT_PATH" \
-            -runTests \
-            -testPlatform EditMode \
-            -testResults "$CM_BUILD_DIR/editmode-results.xml" \
-            -logFile -
+      - name: Use App Store signing profiles
+        script: xcode-project use-profiles
 
-      - name: Run PlayMode tests
-        script: |
-          "$UNITY_HOME/Contents/MacOS/Unity" \
-            -batchmode \
-            -nographics \
-            -projectPath "$UNITY_PROJECT_PATH" \
-            -runTests \
-            -testPlatform PlayMode \
-            -testResults "$CM_BUILD_DIR/playmode-results.xml" \
-            -logFile -
-
-      - name: Build Android development APK
-        script: |
-          "$UNITY_HOME/Contents/MacOS/Unity" \
-            -batchmode \
-            -nographics \
-            -quit \
-            -projectPath "$UNITY_PROJECT_PATH" \
-            -executeMethod ArisMonsterTrucks.Editor.ProjectBuilder.BuildAndroidDevelopment \
-            -logFile -
+      - name: Build signed IPA
+        script: >
+          xcode-project build-ipa
+          --project "$XCODE_PROJECT"
+          --scheme "$XCODE_SCHEME"
 
     artifacts:
-      - Builds/Android/*.apk
-      - editmode-results.xml
-      - playmode-results.xml
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
 
     publishing:
-      scripts:
-        - name: Deactivate Unity license
-          script: |
-            "$UNITY_HOME/Contents/MacOS/Unity" \
-              -batchmode \
-              -quit \
-              -logFile - \
-              -returnlicense \
-              -username "$UNITY_EMAIL" \
-              -password "$UNITY_PASSWORD"
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

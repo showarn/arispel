@@ -118,6 +118,110 @@ namespace ArisMonsterTrucks.Editor
             EnsureBuildSucceeded(report, "Android");
         }
 
+        [MenuItem("Aris Monstertrucks/Exportera iOS Xcode-projekt")]
+        public static void ExportIosXcodeProject()
+        {
+            PrepareGeneratedAssets();
+            Directory.CreateDirectory("Builds/iOS");
+
+            PlayerSettings.SetApplicationIdentifier(
+                NamedBuildTarget.iOS,
+                "se.arisfamiljespel.arisspel"
+            );
+            PlayerSettings.companyName = "Aris Familjespel";
+            PlayerSettings.productName = "Arisspel";
+            PlayerSettings.bundleVersion = "0.5.0";
+            PlayerSettings.iOS.buildNumber =
+                Environment.GetEnvironmentVariable("CM_BUILD_NUMBER") ?? "1";
+            PlayerSettings.iOS.targetOSVersionString = "15.0";
+            PlayerSettings.defaultInterfaceOrientation =
+                UIOrientation.AutoRotation;
+            PlayerSettings.allowedAutorotateToLandscapeLeft = true;
+            PlayerSettings.allowedAutorotateToLandscapeRight = true;
+            PlayerSettings.allowedAutorotateToPortrait = false;
+            PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
+            AssignIosAppIcon();
+
+            BuildPlayerOptions options = new()
+            {
+                scenes = new[] { ScenePath },
+                locationPathName = "Builds/iOS",
+                target = BuildTarget.iOS,
+                options = BuildOptions.None
+            };
+
+            BuildReport report = BuildPipeline.BuildPlayer(options);
+            EnsureBuildSucceeded(report, "iOS Xcode-export");
+            AddIosMarketingIcon();
+        }
+
+        private static void AssignIosAppIcon()
+        {
+            Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(
+                "Assets/Branding/app_icon.png"
+            );
+            if (icon == null)
+            {
+                throw new BuildFailedException(
+                    "Appikonen Assets/Branding/app_icon.png kunde inte laddas."
+                );
+            }
+
+            int iconCount = PlayerSettings.GetIconSizes(
+                NamedBuildTarget.iOS,
+                IconKind.Application
+            ).Length;
+            Texture2D[] icons = new Texture2D[iconCount];
+            for (int index = 0; index < icons.Length; index++)
+            {
+                icons[index] = icon;
+            }
+
+            PlayerSettings.SetIcons(
+                NamedBuildTarget.iOS,
+                icons,
+                IconKind.Application
+            );
+        }
+
+        private static void AddIosMarketingIcon()
+        {
+            const string iconSource = "Assets/Branding/app_icon.png";
+            const string iconDirectory =
+                "Builds/iOS/Unity-iPhone/Images.xcassets/AppIcon.appiconset";
+            string contentsPath = Path.Combine(iconDirectory, "Contents.json");
+            string destinationPath = Path.Combine(
+                iconDirectory,
+                "Icon-AppStore-1024.png"
+            );
+
+            if (!File.Exists(contentsPath))
+            {
+                throw new BuildFailedException(
+                    "Xcodes AppIcon-katalog saknas efter iOS-exporten."
+                );
+            }
+
+            File.Copy(iconSource, destinationPath, true);
+            string contents = File.ReadAllText(contentsPath);
+            const string marker = "\"images\" : [";
+            const string marketingIcon =
+                "\n\t\t{\n"
+                + "\t\t\t\"filename\" : \"Icon-AppStore-1024.png\",\n"
+                + "\t\t\t\"idiom\" : \"ios-marketing\",\n"
+                + "\t\t\t\"scale\" : \"1x\",\n"
+                + "\t\t\t\"size\" : \"1024x1024\"\n"
+                + "\t\t},";
+            if (!contents.Contains("Icon-AppStore-1024.png"))
+            {
+                contents = contents.Replace(
+                    marker,
+                    marker + marketingIcon
+                );
+                File.WriteAllText(contentsPath, contents);
+            }
+        }
+
         private static void PrepareGeneratedAssets()
         {
             FishingAssetBuilder.EnsureFishingAssets();
