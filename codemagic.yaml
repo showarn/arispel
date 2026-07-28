@@ -20,6 +20,17 @@ workflows:
             https://github.com/showarn/arispel/releases/download/ios-export-0.5.0/arisspel-ios-xcode.zip
           unzip -q /tmp/arisspel-ios-xcode.zip -d "$CM_BUILD_DIR"
 
+      - name: Set build number and encryption declaration
+        script: |
+          cd iOS
+          agvtool new-version -all "$BUILD_NUMBER"
+          /usr/libexec/PlistBuddy \
+            -c "Add :ITSAppUsesNonExemptEncryption bool false" \
+            Info.plist || \
+          /usr/libexec/PlistBuddy \
+            -c "Set :ITSAppUsesNonExemptEncryption false" \
+            Info.plist
+
       - name: Use App Store signing profiles
         script: xcode-project use-profiles
 
