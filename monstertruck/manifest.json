@@ -1,0 +1,659 @@
+{
+  "formatVersion": 2,
+  "pixelsPerUnit": 100.0,
+  "recommendedUnityImport": {
+    "textureType": "Sprite (2D and UI)",
+    "spriteMode": "Single",
+    "meshType": "Full Rect",
+    "filterMode": "Bilinear",
+    "compression": "None",
+    "generateMipMaps": false,
+    "alphaIsTransparency": true
+  },
+  "prototypeAssembly": {
+    "bodyLocalPosition": [
+      0.0,
+      0.0
+    ],
+    "chassisLocalPosition": [
+      -0.025,
+      -1.825
+    ],
+    "rearWheelLocalPosition": [
+      -1.6403195488721805,
+      -1.9307142857142856
+    ],
+    "frontWheelLocalPosition": [
+      1.542167577413479,
+      -1.9293351548269584
+    ],
+    "sortingOrders": {
+      "chassis": 10,
+      "body": 20,
+      "wheels": 30,
+      "optionalParts": 40
+    }
+  },
+  "sourceMetadata": {
+    "assembled_preview": {
+      "sourceCrop": [
+        35,
+        40,
+        550,
+        435
+      ],
+      "sourceObjectBounds": [
+        35,
+        15,
+        493,
+        381
+      ],
+      "sourceCenter": [
+        299.0,
+        238.0
+      ],
+      "outputSize": [
+        506,
+        414
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "body": {
+      "sourceCrop": [
+        565,
+        30,
+        1130,
+        280
+      ],
+      "sourceObjectBounds": [
+        56,
+        29,
+        548,
+        228
+      ],
+      "sourceCenter": [
+        867.0,
+        158.5
+      ],
+      "outputSize": [
+        540,
+        247
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "chassis_with_mount_markers": {
+      "sourceCrop": [
+        575,
+        260,
+        1120,
+        400
+      ],
+      "sourceObjectBounds": [
+        47,
+        38,
+        532,
+        124
+      ],
+      "sourceCenter": [
+        864.5,
+        341.0
+      ],
+      "outputSize": [
+        533,
+        134
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "wheel_standard": {
+      "sourceCrop": [
+        30,
+        465,
+        255,
+        705
+      ],
+      "sourceObjectBounds": [
+        33,
+        57,
+        201,
+        226
+      ],
+      "sourceCenter": [
+        147.0,
+        606.5
+      ],
+      "outputSize": [
+        216,
+        217
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 28
+      }
+    },
+    "wheel_mud": {
+      "sourceCrop": [
+        265,
+        465,
+        485,
+        705
+      ],
+      "sourceObjectBounds": [
+        30,
+        56,
+        197,
+        225
+      ],
+      "sourceCenter": [
+        378.5,
+        605.5
+      ],
+      "outputSize": [
+        215,
+        217
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 28
+      }
+    },
+    "wheel_ice": {
+      "sourceCrop": [
+        495,
+        465,
+        720,
+        705
+      ],
+      "sourceObjectBounds": [
+        33,
+        51,
+        210,
+        225
+      ],
+      "sourceCenter": [
+        616.5,
+        603.0
+      ],
+      "outputSize": [
+        225,
+        222
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 26
+      }
+    },
+    "wheel_glow": {
+      "sourceCrop": [
+        725,
+        465,
+        950,
+        705
+      ],
+      "sourceObjectBounds": [
+        46,
+        56,
+        212,
+        225
+      ],
+      "sourceCenter": [
+        854.0,
+        605.5
+      ],
+      "outputSize": [
+        214,
+        217
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 28
+      }
+    },
+    "front_bumper": {
+      "sourceCrop": [
+        1115,
+        65,
+        1380,
+        190
+      ],
+      "sourceObjectBounds": [
+        68,
+        32,
+        245,
+        108
+      ],
+      "sourceCenter": [
+        1271.5,
+        135.0
+      ],
+      "outputSize": [
+        225,
+        124
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "rear_bumper": {
+      "sourceCrop": [
+        1105,
+        195,
+        1390,
+        315
+      ],
+      "sourceObjectBounds": [
+        75,
+        39,
+        260,
+        98
+      ],
+      "sourceCenter": [
+        1272.5,
+        263.5
+      ],
+      "outputSize": [
+        233,
+        107
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "roof_light_bar": {
+      "sourceCrop": [
+        1105,
+        295,
+        1390,
+        405
+      ],
+      "sourceObjectBounds": [
+        81,
+        45,
+        254,
+        96
+      ],
+      "sourceCenter": [
+        1272.5,
+        365.5
+      ],
+      "outputSize": [
+        221,
+        99
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "exhaust": {
+      "sourceCrop": [
+        1080,
+        390,
+        1310,
+        545
+      ],
+      "sourceObjectBounds": [
+        82,
+        44,
+        205,
+        139
+      ],
+      "sourceCenter": [
+        1223.5,
+        481.5
+      ],
+      "outputSize": [
+        171,
+        143
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "suspension_spring": {
+      "sourceCrop": [
+        1040,
+        525,
+        1215,
+        710
+      ],
+      "sourceObjectBounds": [
+        109,
+        55,
+        148,
+        161
+      ],
+      "sourceCenter": [
+        1168.5,
+        633.0
+      ],
+      "outputSize": [
+        87,
+        154
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "suspension_strut": {
+      "sourceCrop": [
+        1185,
+        525,
+        1315,
+        710
+      ],
+      "sourceObjectBounds": [
+        75,
+        55,
+        109,
+        161
+      ],
+      "sourceCenter": [
+        1277.0,
+        633.0
+      ],
+      "outputSize": [
+        82,
+        154
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "decal_flame": {
+      "sourceCrop": [
+        15,
+        735,
+        220,
+        850
+      ],
+      "sourceObjectBounds": [
+        23,
+        35,
+        176,
+        100
+      ],
+      "sourceCenter": [
+        114.5,
+        802.5
+      ],
+      "outputSize": [
+        201,
+        113
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "decal_skull": {
+      "sourceCrop": [
+        185,
+        735,
+        395,
+        850
+      ],
+      "sourceObjectBounds": [
+        34,
+        30,
+        174,
+        102
+      ],
+      "sourceCenter": [
+        289.0,
+        801.0
+      ],
+      "outputSize": [
+        188,
+        120
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "decal_lightning": {
+      "sourceCrop": [
+        350,
+        735,
+        565,
+        850
+      ],
+      "sourceObjectBounds": [
+        36,
+        28,
+        189,
+        100
+      ],
+      "sourceCenter": [
+        462.5,
+        799.0
+      ],
+      "outputSize": [
+        201,
+        120
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "engine_blower": {
+      "sourceCrop": [
+        555,
+        735,
+        715,
+        900
+      ],
+      "sourceObjectBounds": [
+        48,
+        50,
+        146,
+        125
+      ],
+      "sourceCenter": [
+        652.0,
+        822.5
+      ],
+      "outputSize": [
+        146,
+        123
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "air_intake": {
+      "sourceCrop": [
+        690,
+        735,
+        830,
+        900
+      ],
+      "sourceObjectBounds": [
+        65,
+        44,
+        123,
+        128
+      ],
+      "sourceCenter": [
+        784.0,
+        821.0
+      ],
+      "outputSize": [
+        106,
+        132
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "fuel_tank": {
+      "sourceCrop": [
+        800,
+        735,
+        960,
+        900
+      ],
+      "sourceObjectBounds": [
+        68,
+        44,
+        135,
+        129
+      ],
+      "sourceCenter": [
+        901.5,
+        821.5
+      ],
+      "outputSize": [
+        115,
+        133
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "roll_cage": {
+      "sourceCrop": [
+        900,
+        735,
+        1190,
+        910
+      ],
+      "sourceObjectBounds": [
+        82,
+        43,
+        254,
+        128
+      ],
+      "sourceCenter": [
+        1068.0,
+        820.5
+      ],
+      "outputSize": [
+        220,
+        133
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    "flag": {
+      "sourceCrop": [
+        1140,
+        735,
+        1360,
+        910
+      ],
+      "sourceObjectBounds": [
+        70,
+        32,
+        177,
+        149
+      ],
+      "sourceCenter": [
+        1263.5,
+        825.5
+      ],
+      "outputSize": [
+        155,
+        165
+      ],
+      "transparentMargins": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    }
+  },
+  "qualityControl": {
+    "minimumTransparentMarginPixels": 18,
+    "wheelPresentationShadowsRemoved": true,
+    "allSpritesPassed": true
+  },
+  "files": [
+    "air_intake.png",
+    "assembled_preview.png",
+    "body.png",
+    "chassis_with_mount_markers.png",
+    "decal_flame.png",
+    "decal_lightning.png",
+    "decal_skull.png",
+    "engine_blower.png",
+    "exhaust.png",
+    "flag.png",
+    "front_bumper.png",
+    "fuel_tank.png",
+    "rear_bumper.png",
+    "roll_cage.png",
+    "roof_light_bar.png",
+    "suspension_spring.png",
+    "suspension_strut.png",
+    "wheel_glow.png",
+    "wheel_glow_centered_256.png",
+    "wheel_ice.png",
+    "wheel_ice_centered_256.png",
+    "wheel_mud.png",
+    "wheel_mud_centered_256.png",
+    "wheel_standard.png",
+    "wheel_standard_centered_256.png"
+  ]
+}

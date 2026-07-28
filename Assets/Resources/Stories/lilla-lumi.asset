@@ -1,0 +1,202 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da95b765f8d44f4cb98a9f7b75d7bcab, type: 3}
+  m_Name: lilla-lumi
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Stories.StoryDefinition
+  storyId: lilla-lumi
+  title: Lilla Lumi
+  sortOrder: 0
+  endMessage: 
+  cover: {fileID: 21300000, guid: 577a2e8884ddeb20eb11102be37f52d9, type: 3}
+  narration: {fileID: 8300000, guid: a5fece08d79300affa0339ece09aa58d, type: 3}
+  pages:
+  - illustration: {fileID: 21300000, guid: 577a2e8884ddeb20eb11102be37f52d9, type: 3}
+    text: "Lilla Lumi och m\xE5nens glittrande stig"
+    startTime: 0
+    endTime: 4.04
+    animationType: 3
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.035
+    cover: 1
+  - illustration: {fileID: 21300000, guid: 0e23160093bf1c4feb887fe491a19dcf, type: 3}
+    text: "Det var en g\xE5ng en liten vit s\xE4l som hette Lumi.\n\nLumi bodde p\xE5
+      en mjuk klippa n\xE4ra havet tillsammans med sin mamma. P\xE5 dagarna brukade
+      hon simma, leka med bubblor och f\xF6rs\xF6ka f\xE5nga sitt eget blanka svansplask.\n\nMen
+      allra mest tyckte Lumi om kv\xE4llen."
+    startTime: 4.04
+    endTime: 22.5
+    animationType: 0
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 051c625fef4f5ce00ad378cfbf9fab8c, type: 3}
+    text: "N\xE4r solen sj\xF6nk ner bakom havet blev himlen rosa, lila och till
+      sist alldeles m\xF6rkbl\xE5. D\xE5 t\xE4ndes den stora, runda m\xE5nen ovanf\xF6r
+      vattnet.\n\nEn kv\xE4ll l\xE5g Lumi p\xE5 sin klippa och tittade ut \xF6ver
+      havet.\n\nM\xE5nen lyste s\xE5 starkt att den skapade en l\xE5ng, glittrande
+      stig \xF6ver v\xE5gorna."
+    startTime: 22.5
+    endTime: 43.81
+    animationType: 3
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: dfd855b0d6ae61a22b8b9bfef91f3d0f, type: 3}
+    text: "\u2013 Mamma, vart leder m\xE5nens stig? fr\xE5gade Lumi.\n\nMamma S\xE4l
+      tittade ut \xF6ver vattnet och log.\n\n\u2013 Det vet bara m\xE5nen, svarade
+      hon. Men du f\xE5r simma en liten bit och se efter. Jag finns h\xE4r och v\xE4ntar
+      p\xE5 dig."
+    startTime: 43.81
+    endTime: 60.49
+    animationType: 1
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: d10be475b1d769ac39038c8ec5b78f78, type: 3}
+    text: "Lumi gled f\xF6rsiktigt ner i det ljumma vattnet.\n\nPlopp.\n\nHavet gungade
+      mjukt omkring henne.\n\nUpp och ner.\n\nUpp och ner.\n\nLumi b\xF6rjade simma
+      l\xE4ngs den glittrande stigen. M\xE5nskenet dansade framf\xF6r nosen som hundratals
+      sm\xE5 silverstj\xE4rnor."
+    startTime: 60.49
+    endTime: 79.23
+    animationType: 2
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 6edf415aaf2331cd38fc4f57a7872913, type: 3}
+    text: "Efter en stund h\xF6rde hon ett f\xF6rsiktigt ljud.\n\n\u2013 Blubb, blubb.\n\nBakom
+      en sten satt en liten bl\xE5 fisk.\n\n\u2013 Varf\xF6r \xE4r du vaken? fr\xE5gade
+      Lumi.\n\n\u2013 Jag hittar inte hem, sa fisken. Allt ser annorlunda ut i m\xF6rkret."
+    startTime: 79.23
+    endTime: 95.61
+    animationType: 2
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 3684b6336182aa6779d75f5ab7096070, type: 3}
+    text: "\u2013 Du kan simma med mig, sa Lumi. M\xE5nens stig kanske visar v\xE4gen.\n\nFisken
+      simmade bredvid henne.\n\nTillsammans f\xF6ljde de ljuset \xF6ver det lugna
+      havet.\n\nUpp och ner.\n\nUpp och ner."
+    startTime: 95.61
+    endTime: 111.07
+    animationType: 0
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 8a8e74e6ee79a894d8649974dc38f247, type: 3}
+    text: "Snart m\xF6tte de en gammal havssk\xF6ldpadda som vilade p\xE5 en b\xE4dd
+      av mjukt sj\xF6gr\xE4s.\n\n\u2013 God kv\xE4ll, sm\xE5 v\xE4nner, sa sk\xF6ldpaddan
+      l\xE5ngsamt. Vart \xE4r ni p\xE5 v\xE4g?\n\n\u2013 Vi f\xF6ljer m\xE5nens stig,
+      sa Lumi. Och den lilla fisken f\xF6rs\xF6ker hitta hem."
+    startTime: 111.07
+    endTime: 128.51
+    animationType: 2
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 8472c752ee1f45837817075bf4db94db, type: 3}
+    text: "Sk\xF6ldpaddan tittade upp mot m\xE5nen.\n\n\u2013 D\xE5 ska ni f\xF6lja
+      det mjukaste ljuset, sa hon. M\xE5nen lyser alltid lite extra \xF6ver platser
+      d\xE4r n\xE5gon v\xE4ntar.\n\nLumi och fisken tackade sk\xF6ldpaddan och simmade
+      vidare."
+    startTime: 128.51
+    endTime: 143.61
+    animationType: 1
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 9cb8bc97f9edf86e0857740d24904102, type: 3}
+    text: "Nu blev v\xE5gorna \xE4nnu lugnare.\n\nHavet l\xE4t:\n\nSchhh.\n\nSchhh.\n\nSchhh.\n\nSom
+      om det viskade att allting var tryggt."
+    startTime: 143.61
+    endTime: 152.23
+    animationType: 3
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: a4b54a50746074d9a99854679c0cb96f, type: 3}
+    text: "Pl\xF6tsligt pekade den lilla fisken med sin fena.\n\n\u2013 Titta!\n\nFramf\xF6r
+      dem lyste en liten korallgrotta i m\xE5nens sken. I \xF6ppningen simmade flera
+      fiskar fram och tillbaka.\n\n\u2013 D\xE4r \xE4r du ju! ropade fiskarna glatt.\n\nDen
+      lilla bl\xE5 fisken simmade snabbt fram till sin familj.\n\n\u2013 Tack, Lumi!
+      sa den. Nu \xE4r jag hemma."
+    startTime: 152.23
+    endTime: 176.07
+    animationType: 0
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: b5ba2c1da1af2147b92a74e2212b2f60, type: 3}
+    text: "Lumi vinkade med sin fena och fortsatte en liten bit l\xE4ngs m\xE5nens
+      stig.\n\nL\xE4ngre ut p\xE5 havet fl\xF6t en liten b\xE5t. Seglet var nedf\xE4llt
+      och en lykta lyste varmt i f\xF6ren. B\xE5ten gungade l\xE5ngsamt p\xE5 v\xE5gorna.\n\nUpp
+      och ner.\n\nUpp och ner.\n\nP\xE5 b\xE5tens kant satt en liten m\xE5sf\xE5gel
+      och g\xE4spade."
+    startTime: 176.07
+    endTime: 198.59
+    animationType: 2
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 4e95ea2c189af8121948fc23832ce31a, type: 3}
+    text: "\u2013 Vet du vart m\xE5nens stig leder? fr\xE5gade Lumi.\n\nM\xE5sen
+      g\xE4spade \xE4nnu en g\xE5ng.\n\n\u2013 Kanske leder den inte bort n\xE5gonstans,
+      sa hon. Kanske leder den hem."
+    startTime: 198.59
+    endTime: 210.25
+    animationType: 1
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 28ecfe11f9ea07d4ca643d30c2b6ba45, type: 3}
+    text: "Lumi stannade och tittade tillbaka.\n\nL\xE5ngt borta kunde hon se sin
+      klippa. D\xE4r satt mamma S\xE4l och v\xE4ntade. M\xE5nen lyste \xF6ver henne
+      och gjorde hennes p\xE4ls alldeles silvervit.\n\nD\xE5 f\xF6rstod Lumi.\n\nM\xE5nens
+      stig hade hj\xE4lpt den lilla fisken att hitta hem.\n\nOch nu visade den \xE4ven
+      v\xE4gen hem f\xF6r Lumi."
+    startTime: 210.25
+    endTime: 232.17
+    animationType: 0
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 5e42f5b37417393ffb9aaea650d57156, type: 3}
+    text: "Hon b\xF6rjade simma tillbaka.\n\nHavet bar henne f\xF6rsiktigt fram\xE5t.\n\nSchhh.\n\nSchhh.\n\nSchhh."
+    startTime: 232.17
+    endTime: 240.51
+    animationType: 2
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: e452da7a5b16cdfc0a88240f81c126f2, type: 3}
+    text: "N\xE4r Lumi kom fram till klippan hj\xE4lpte mamma henne upp ur vattnet.\n\n\u2013
+      Fick du veta vart m\xE5nens stig leder? fr\xE5gade mamma.\n\nLumi kr\xF6p n\xE4ra
+      intill hennes varma sida.\n\n\u2013 Ja, sa hon s\xF6mnigt. Den leder till n\xE5gon
+      som v\xE4ntar p\xE5 en.\n\nMamma S\xE4l lade sin fena omkring henne."
+    startTime: 240.51
+    endTime: 259.63
+    animationType: 1
+    parallaxDirection: {x: -0.7, y: 0.25}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: febcb21e6bfc6ddc4af533926040e861, type: 3}
+    text: "Ovanf\xF6r dem lyste m\xE5nen.\n\nUnder dem gungade havet sakta.\n\nUpp
+      och ner.\n\nUpp och ner.\n\nLumis \xF6gon blev tyngre och tyngre.\n\nHon t\xE4nkte
+      p\xE5 den lilla fisken, den gamla sk\xF6ldpaddan och b\xE5ten som vilade p\xE5
+      v\xE5gorna.\n\nSedan somnade hon tryggt bredvid sin mamma medan havet fortsatte
+      att viska:\n\nSchhh.\nSchhh.\nSov s\xE5 gott."
+    startTime: 259.63
+    endTime: 287.138
+    animationType: 3
+    parallaxDirection: {x: 1, y: 0.2}
+    zoom: 1.022
+    cover: 0

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74b14230b215f6ee982447d014b9e8c, type: 3}
+  m_Name: bubble-fish
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Fishing.FishDefinition
+  stableId: bubble-fish
+  displayName: Bubbelfisken
+  displayOrder: 11
+  sprite: {fileID: 21300000, guid: 04be1be6dcec17c109703d24fd79345f, type: 3}
+  catchSprite: {fileID: 21300000, guid: 04be1be6dcec17c109703d24fd79345f, type: 3}
+  rarity: 1
+  selectionWeight: 16
+  minimumLengthCentimeters: 14
+  maximumLengthCentimeters: 31
+  swimSpeed: 1.06
+  fishSound: {fileID: 0}
+  shortFact: "Bubbelfisken g\xF6r p\xE4rlande bubblor."
+  uiColor: {r: 0.47843137, g: 0.8117647, b: 0.95686275, a: 1}

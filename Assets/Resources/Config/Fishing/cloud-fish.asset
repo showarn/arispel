@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74b14230b215f6ee982447d014b9e8c, type: 3}
+  m_Name: cloud-fish
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Fishing.FishDefinition
+  stableId: cloud-fish
+  displayName: Molnfisken
+  displayOrder: 27
+  sprite: {fileID: 21300000, guid: 1a8ec1f361ab552f4979c4c6e79892d6, type: 3}
+  catchSprite: {fileID: 21300000, guid: 1a8ec1f361ab552f4979c4c6e79892d6, type: 3}
+  rarity: 3
+  selectionWeight: 5.8
+  minimumLengthCentimeters: 22
+  maximumLengthCentimeters: 45
+  swimSpeed: 0.78
+  fishSound: {fileID: 0}
+  shortFact: "Molnfisken sv\xE4var mjukt genom vattnet."
+  uiColor: {r: 0.6627451, g: 0.8666667, b: 0.9647059, a: 1}

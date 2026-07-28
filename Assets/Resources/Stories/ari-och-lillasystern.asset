@@ -1,0 +1,236 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da95b765f8d44f4cb98a9f7b75d7bcab, type: 3}
+  m_Name: ari-och-lillasystern
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Stories.StoryDefinition
+  storyId: ari-och-lillasystern
+  title: Ari och lillasystern
+  sortOrder: 1
+  endMessage: "Ari \xE4r storebror."
+  cover: {fileID: 21300000, guid: a21d2f76c20728ef7b1bbd614adedeab, type: 3}
+  narration: {fileID: 8300000, guid: cff0ec808fa84c1f1ae895ba0901ef88, type: 3}
+  pages:
+  - illustration: {fileID: 21300000, guid: a21d2f76c20728ef7b1bbd614adedeab, type: 3}
+    text: "Ari och lillasystern som tog v\xE4ldigt l\xE5ng tid p\xE5 sig"
+    startTime: 0
+    endTime: 3.34
+    animationType: 1
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.035
+    cover: 1
+  - illustration: {fileID: 21300000, guid: 250076b420a1986ada3561d66e31348b, type: 3}
+    text: "En dag var Ari hemma i radhuset med mamma och pappa. Han hade parkerat
+      sina leksaksbilar i en l\xE5ng k\xF6 \xF6ver vardagsrumsgolvet n\xE4r mamma
+      log p\xE5 ett hemligt s\xE4tt.\n\n\u2013 Ari, vi har n\xE5got viktigt att ber\xE4tta,
+      sa hon.\n\nAri stannade mitt i en stor bilkrasch.\n\n\u2013 Har vi k\xF6pt
+      en gr\xE4vmaskin?\n\nPappa skrattade.\n\n\u2013 Nej, du ska f\xE5 en lillasyster."
+    startTime: 3.34
+    endTime: 25.12
+    animationType: 0
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: c21f55bce4bb2e524ab02baf77beeca5, type: 3}
+    text: "Ari tittade p\xE5 mamma, sedan p\xE5 pappa och till sist p\xE5 mammas
+      mage.\n\n\u2013 En riktig lillasyster?\n\n\u2013 En alldeles riktig. N\xE4r
+      hon har vuxit f\xE4rdigt ska hon flytta in h\xE4r i radhuset med oss.\n\nAri
+      blev s\xE5 glad att han sprang tv\xE5 varv runt vardagsrummet. P\xE5 det tredje
+      snubblade han p\xE5 en kudde och landade med rumpan f\xF6rst.\n\n\u2013 N\xE4r
+      kommer hon?\n\n\u2013 N\xE4r hon \xE4r f\xE4rdig i magen, svarade mamma."
+    startTime: 25.12
+    endTime: 48.18
+    animationType: 1
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 39da67e38d95e7e089e99f4636451494, type: 3}
+    text: "Fr\xE5n den dagen v\xE4ntade Ari. Varje morgon fr\xE5gade han:\n\n\u2013
+      Kommer lillasyster i dag?\n\nN\xE4r det ringde p\xE5 d\xF6rren ropade han:\n\n\u2013
+      Nu \xE4r det hon!\n\nMen det var bara grannen som ville l\xE5na en skruvmejsel."
+    startTime: 48.18
+    endTime: 60.5
+    animationType: 0
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: de270d2c6f34c9e33a51b369b49aa95d, type: 3}
+    text: "Ari gjorde plats \xE5t lillasyster bredvid sin kudde. Han lade dit en
+      filt och en r\xF6d leksaksbil.\n\n\u2013 Hon f\xE5r l\xE5na den r\xF6da. Men
+      inte den bl\xE5. Den \xE4r v\xE4ldigt snabb.\n\nDagar blev till veckor och
+      veckor till m\xE5nader. Ingen lillasyster kom. I st\xE4llet blev mammas mage
+      st\xF6rre och rundare."
+    startTime: 60.5
+    endTime: 78.22
+    animationType: 1
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: f0eec94999c83c84fae1b16065f3bc60, type: 3}
+    text: "Ari brukade l\xE4gga \xF6rat mot magen. En dag kom en liten buff fr\xE5n
+      insidan.\n\n\u2013 Hon sparkade mig!\n\n\u2013 Hon h\xE4lsade nog, sa mamma.\n\n\u2013
+      Hon kunde ha vinkat i st\xE4llet, tyckte Ari."
+    startTime: 78.22
+    endTime: 89.56
+    animationType: 1
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 61544557168a7a12c90239ff7318df0a, type: 3}
+    text: "Ju st\xF6rre magen blev, desto tr\xF6ttare blev mamma. Ibland somnade
+      hon n\xE4stan i soffan. D\xE5 lade Ari en filt \xF6ver henne och placerade
+      sin mjuka kanin bredvid.\n\n\u2013 Du f\xE5r l\xE5na den tills du \xE4r f\xE4rdigsovd,
+      viskade han."
+    startTime: 89.56
+    endTime: 103.9
+    animationType: 2
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: bcc165770e65eab69880b5d0ce4c3e14, type: 3}
+    text: "En kv\xE4ll kom mormor till radhuset med en stor v\xE4ska, en kudde och
+      v\xE4ldigt m\xE5nga saker som hon kanske kunde beh\xF6va.\n\n\u2013 Ska du
+      flytta in ocks\xE5? fr\xE5gade Ari.\n\n\u2013 Nej, jag sover bara h\xE4r i
+      natt. I morgon \xE5ker du och jag till mitt r\xF6da hus."
+    startTime: 103.9
+    endTime: 120.22
+    animationType: 0
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: f5834968b37649f908d285a43c443c51, type: 3}
+    text: "N\xE4sta morgon kramade Ari mamma, sedan pappa och sedan mamma en g\xE5ng
+      till, bara f\xF6r s\xE4kerhets skull. P\xE5 v\xE4gen tittade han ut genom bilf\xF6nstret.
+      Han saknade redan mamma, pappa och radhuset."
+    startTime: 120.22
+    endTime: 133.14
+    animationType: 1
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 4e0d2b23634c32e0f9ede958337747a8, type: 3}
+    text: "Den f\xF6rsta kv\xE4llen hos mormor k\xE4ndes det r\xF6da huset stort
+      och tyst.\n\n\u2013 Jag saknar mamma och pappa, sa Ari.\n\nMormor h\xF6ll om
+      honom.\n\n\u2013 De saknar dig ocks\xE5. Snart ses ni igen. Och kanske f\xF6ljer
+      n\xE5gon v\xE4ldigt liten med hem."
+    startTime: 133.14
+    endTime: 147.06
+    animationType: 3
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 963a5ee27f0d7fe309f9aed4174be046, type: 3}
+    text: "Ari undrade om lillasyster hade h\xE5r, om hon kunde prata och om hon
+      visste hur l\xE4nge han hade v\xE4ntat. Till slut somnade han.\n\nMormor sm\xF6g
+      ut och hann dricka en hel kopp te medan den fortfarande var varm. Det hade
+      n\xE4stan aldrig h\xE4nt f\xF6rut."
+    startTime: 147.06
+    endTime: 160.66
+    animationType: 2
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 27da3f76319b307ecb8a80ef07624bfe, type: 3}
+    text: "N\xE4sta dag kom en flicka som hette Sara.\n\n\u2013 Vill du hoppa studsmatta?\n\nDet
+      ville Ari. De hoppade som grodor, som k\xE4ngurur och till sist som tv\xE5
+      v\xE4ldigt vingliga popcorn. Sedan byggde de en koja, jagade s\xE5pbubblor
+      och \xE5t mellanm\xE5l i tr\xE4dg\xE5rden."
+    startTime: 160.66
+    endTime: 177.38
+    animationType: 2
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 9ce96d5114677efe98c63145d574ada1, type: 3}
+    text: "Ari hade s\xE5 roligt att mamma och pappa n\xE4stan blev bortgl\xF6mda.\n\nN\xE4stan.\n\nF\xF6r
+      n\xE4r kv\xE4llen kom blev allting tyst igen.\n\n\u2013 Jag saknar dem nu,
+      sa Ari och drog t\xE4cket till n\xE4san."
+    startTime: 177.38
+    endTime: 190.3
+    animationType: 3
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 912bb5bbd4e8adf6b94d660a56f8e486, type: 3}
+    text: "Mormor ber\xE4ttade samma saga tv\xE5 g\xE5nger, h\xE4mtade vatten tre
+      g\xE5nger och letade efter kaninen som hela tiden l\xE5g under Aris arm. Till
+      slut somnade han, och mormor fick lite lugn och ro igen."
+    startTime: 190.3
+    endTime: 202.74
+    animationType: 0
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: f0333ee087c70f5b194a4a327e23d8f3, type: 3}
+    text: "Dagarna gick. Ari och mormor ritade, \xE5t frukost i pyjamas och vinkade
+      \xE5t traktorer som k\xF6rde f\xF6rbi. Ibland lekte Ari med Sara. Ibland fr\xE5gade
+      han:\n\n\u2013 \xC4r lillasyster f\xE4rdig snart?"
+    startTime: 202.74
+    endTime: 215.32
+    animationType: 0
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 25501e82a8fa4ce1fa604481ac5180e4, type: 3}
+    text: "Hemma vid radhuset v\xE4ntade grannbarnen.\n\n\u2013 N\xE4r kommer Ari
+      hem? fr\xE5gade de varje dag.\n\nDe tittade mot v\xE4gen och lyssnade efter
+      bilen."
+    startTime: 215.32
+    endTime: 225.1
+    animationType: 0
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: cc243ee6568006558990d2d62b7e5836, type: 3}
+    text: "En morgon sa mormor:\n\n\u2013 Ari, i dag \xE5ker vi hem!\n\nAri sprang
+      mot bilen s\xE5 fort att mormor n\xE4stan gl\xF6mde hans ena sko."
+    startTime: 225.1
+    endTime: 232.98
+    animationType: 0
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: c2c3407198d3272469d961741ba52eb0, type: 3}
+    text: "N\xE4r bilen sv\xE4ngde in vid radhuset stod grannbarnen utanf\xF6r och
+      vinkade. Ari hoppade ur bilen, men d\xE5 h\xF6rde han ett litet pip inifr\xE5n
+      huset.\n\nHan \xF6ppnade d\xF6rren f\xF6rsiktigt.\n\nMamma satt i soffan. Pappa
+      satt bredvid. I mammas famn l\xE5g ett litet paket insvept i en mjuk filt.\n\nPaketet
+      r\xF6rde sig.\n\nAri gick n\xE4rmare.\n\nD\xE4r var hon. Hans lillasyster."
+    startTime: 232.98
+    endTime: 255.98
+    animationType: 1
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0
+  - illustration: {fileID: 21300000, guid: db2e13d37ee0c7ee394c57d1e522b540, type: 3}
+    text: "Hon var mycket mindre \xE4n han hade f\xF6rest\xE4llt sig. Hon hade sm\xE5
+      h\xE4nder, en liten n\xE4sa och pyttesm\xE5 fingrar.\n\n\u2013 \xC4r det d\xE4r
+      hela lillasystern?\n\n\u2013 Ja, sa mamma. Det \xE4r hela lillasystern."
+    startTime: 255.98
+    endTime: 267.32
+    animationType: 1
+    parallaxDirection: {x: 0.75, y: 0.2}
+    zoom: 1.035
+    cover: 0
+  - illustration: {fileID: 21300000, guid: 26c0dc6ba6728c8bcbd3a2b0557aeb6d, type: 3}
+    text: "Ari satte sig bredvid mamma och str\xE4ckte f\xF6rsiktigt fram ett finger.
+      Lillasyster grep tag i det och h\xF6ll fast.\n\n\u2013 D\xE4r \xE4r du ju,
+      viskade Ari. Du tog v\xE4ldigt l\xE5ng tid p\xE5 dig.\n\nSedan h\xE4mtade han
+      den r\xF6da leksaksbilen och lade den bredvid hennes filt. Den bl\xE5 beh\xF6ll
+      han sj\xE4lv. Den var ju v\xE4ldigt snabb.\n\nNu var mamma, pappa, Ari och
+      lillasyster \xE4ntligen hemma tillsammans i radhuset.\n\nOch Ari hade f\xE5tt
+      ett nytt och mycket viktigt jobb.\n\nHan var storebror."
+    startTime: 267.32
+    endTime: 294.81796
+    animationType: 1
+    parallaxDirection: {x: -0.65, y: 0.22}
+    zoom: 1.022
+    cover: 0

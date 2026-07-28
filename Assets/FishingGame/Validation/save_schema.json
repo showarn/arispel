@@ -1,0 +1,22 @@
+{
+  "playerPrefsKey": "fishing.collection.v1",
+  "schemaVersion": 1,
+  "payload": {
+    "version": 1,
+    "fish": [
+      {
+        "fishId": "stable-string-id",
+        "caughtCount": 0,
+        "largestLengthCentimeters": 0.0,
+        "lastCaughtUtc": "ISO-8601-or-empty"
+      }
+    ]
+  },
+  "compatibility": {
+    "unknownFishIds": "preserved and ignored by current UI",
+    "missingRecords": "treated as undiscovered",
+    "missingFields": "safe zero or empty defaults",
+    "invalidJson": "replaced in memory with empty version-1 data",
+    "newDefinitions": "appear automatically as undiscovered"
+  }
+}

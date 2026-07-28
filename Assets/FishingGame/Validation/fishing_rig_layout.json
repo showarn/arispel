@@ -1,0 +1,28 @@
+{
+    "rodPosition": {
+        "x": -395.8217468261719,
+        "y": 9.19090747833252
+    },
+    "rodAngle": 28.0,
+    "rodLength": 530.0,
+    "fishingShoulder": {
+        "x": -491.4071960449219,
+        "y": -16.54363250732422
+    },
+    "gripAlongRod": -31.008893966674806,
+    "gripNormalOffset": 9.548157691955567,
+    "fishingHandOverlap": 55.0,
+    "restingShoulder": {
+        "x": -648.2653198242188,
+        "y": -12.867270469665528
+    },
+    "restingHand": {
+        "x": -568.61083984375,
+        "y": -65.56180572509766
+    },
+    "restingHandOverlap": 18.0,
+    "bobberWaterPosition": {
+        "x": 385.0,
+        "y": -145.0
+    }
+}

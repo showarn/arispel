@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74b14230b215f6ee982447d014b9e8c, type: 3}
+  m_Name: lantern-fish
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Fishing.FishDefinition
+  stableId: lantern-fish
+  displayName: Lyktfisken
+  displayOrder: 14
+  sprite: {fileID: 21300000, guid: b12c909b9baad0602bd9a228bbbdb32c, type: 3}
+  catchSprite: {fileID: 21300000, guid: b12c909b9baad0602bd9a228bbbdb32c, type: 3}
+  rarity: 0
+  selectionWeight: 13
+  minimumLengthCentimeters: 13
+  maximumLengthCentimeters: 29
+  swimSpeed: 0.92
+  fishSound: {fileID: 0}
+  shortFact: "Lyktfisken har en liten v\xE4nlig lykta."
+  uiColor: {r: 1, g: 0.827451, b: 0.19215687, a: 1}

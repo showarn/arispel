@@ -1,0 +1,143 @@
+{
+  "storyId": "lilla-lumi",
+  "title": "Lilla Lumi och månens glittrande stig",
+  "format": {
+    "orientation": "landscape",
+    "aspectRatio": "16:9",
+    "pixelDimensions": "1672x941",
+    "unityReferenceResolution": "1920x1080"
+  },
+  "sharedPrompt": "Original soft hand-painted 2D Nordic children's-book illustration for ages 3–5; calm navy, turquoise, lavender and warm silver-white night palette; rounded clean silhouettes; low visual stress; no text, logo, watermark, border, photorealism or glossy 3D plastic. Keep the lower-left area calm for the story text UI.",
+  "characterBible": {
+    "Lumi": "Small round white baby seal, warm dark eyes, tiny charcoal nose, short whiskers, small rounded flippers, subtle blue-grey fur shadows, no clothes or accessories.",
+    "MotherSeal": "Larger pearl-white seal of the same species, calm protective face and posture.",
+    "BlueFish": "Small rounded turquoise-blue fish, darker soft fins, large calm eyes and friendly face.",
+    "SeaTurtle": "Old friendly rounded turtle in muted green and turquoise with calm wise eyes.",
+    "Seagull": "Small sleepy rounded white-and-soft-grey gull with a pale beak and gentle half-lidded eyes."
+  },
+  "assets": [
+    {
+      "id": "cover",
+      "source": "cover_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/cover.png",
+      "generatedSource": "call_mZuJBzSBKQK0Cz7mMPp7kEuc.png",
+      "scenePrompt": "Lumi rests snugly beside Mother Seal on a smooth sea rock; a full moon creates a long silver path over a nearly still night sea."
+    },
+    {
+      "id": "page_01",
+      "source": "page_01_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_01.png",
+      "generatedSource": "call_27uq92IWQbjdxbn47Qsx1WuN.png",
+      "scenePrompt": "Lumi plays with translucent bubbles and a tail splash at dusk while Mother watches safely from the rock."
+    },
+    {
+      "id": "page_02",
+      "source": "page_02_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_02.png",
+      "generatedSource": "call_bemCCSffLaE6TaADM68c2cBv.png",
+      "scenePrompt": "Lumi lies at the rock edge and watches the full moon light a long silver path across the water."
+    },
+    {
+      "id": "page_03",
+      "source": "page_03_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_03.png",
+      "generatedSource": "call_9rbXmbB4g61CmmtBuBYFz28i.png",
+      "scenePrompt": "Lumi asks Mother Seal about the moon path while they rest close together on the rock."
+    },
+    {
+      "id": "page_04",
+      "source": "page_04_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_04.png",
+      "generatedSource": "call_eBKdeXPw1NHCJx6BLzTwX20x.png",
+      "scenePrompt": "Lumi slips into the sea and swims along the silver path while Mother remains visible behind."
+    },
+    {
+      "id": "page_05",
+      "source": "page_05_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_05.png",
+      "generatedSource": "call_Dynlsr1dgUGRYSYnwBhGwx3Z.png",
+      "scenePrompt": "Underwater, Lumi finds the small blue fish behind a rounded stone among soft sea grass and bubbles."
+    },
+    {
+      "id": "page_06",
+      "source": "page_06_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_06.png",
+      "generatedSource": "call_VAXwBNEl93DjykQlQ6aIlGB8.png",
+      "scenePrompt": "Lumi and the blue fish swim side by side under a broad ribbon of moonlight."
+    },
+    {
+      "id": "page_07",
+      "source": "page_07_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_07.png",
+      "generatedSource": "call_oILfmTLmCe5rBlukRrmgYcLg.png",
+      "scenePrompt": "The old friendly sea turtle rests in sea grass while Lumi and the fish listen."
+    },
+    {
+      "id": "page_08",
+      "source": "page_08_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_08.png",
+      "generatedSource": "call_qjRjSz6O5aMHLO6iqEzZcyK9.png",
+      "scenePrompt": "The turtle points toward the softest, warmer ribbon of moonlight as Lumi and the fish look on."
+    },
+    {
+      "id": "page_09",
+      "source": "page_09_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_09.png",
+      "generatedSource": "call_7V5QJTdqSJUdZJBH48DpCNyJ.png",
+      "scenePrompt": "A wide sleepy sea view with Lumi and the fish small but clear in the moon path."
+    },
+    {
+      "id": "page_10",
+      "source": "page_10_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_10.png",
+      "generatedSource": "call_GFqxOjgxRdjkg6aRn8A9ea3W.png",
+      "scenePrompt": "The blue fish rejoins its friendly family in a warm glowing coral cave while Lumi watches."
+    },
+    {
+      "id": "page_11",
+      "source": "page_11_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_11.png",
+      "generatedSource": "call_YLsBBEJPcvYjl5YlVmjoUHfZ.png",
+      "scenePrompt": "A small wooden boat with lowered sail and warm lantern rocks beside Lumi; a sleepy gull yawns on its edge."
+    },
+    {
+      "id": "page_12",
+      "source": "page_12_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_12.png",
+      "generatedSource": "call_6fGPHWplQ9lc8hxV5ThOVwcF.png",
+      "scenePrompt": "Closer view of Lumi and the sleepy gull; the moon path continues toward a natural distant rock, with no buildings."
+    },
+    {
+      "id": "page_13",
+      "source": "page_13_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_13.png",
+      "generatedSource": "call_0UyxyU1z9McKChHYncDYQNFZ.png",
+      "scenePrompt": "Lumi looks back to Mother waiting in silver moonlight; the moon path binds them together."
+    },
+    {
+      "id": "page_14",
+      "source": "page_14_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_14.png",
+      "generatedSource": "call_EVAzbWz1oHfapCbz4AGOtJKd.png",
+      "scenePrompt": "A sleepy Lumi swims home along the quiet silver path toward the familiar rock."
+    },
+    {
+      "id": "page_15",
+      "source": "page_15_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_15.png",
+      "generatedSource": "call_Y7nmEG5GXtj2ZgO6IEfzWmFx.png",
+      "scenePrompt": "Mother helps Lumi onto the rock and wraps a protective flipper around her."
+    },
+    {
+      "id": "page_16",
+      "source": "page_16_original.png",
+      "unity": "Assets/Resources/Art/Stories/LillaLumi/page_16.png",
+      "generatedSource": "call_VgWinpcuD2hJWwbA8TK97bXt.png",
+      "scenePrompt": "Lumi sleeps under Mother's flipper while faint dream memories of the fish, turtle and boat shimmer in moonlight."
+    }
+  ],
+  "discardedGeneration": {
+    "generatedSource": "call_4i4rPokMPGYDF9QMTu1BYYP4.png",
+    "reason": "The first page 12 attempt introduced a lighthouse and houses; it was not copied into the project."
+  }
+}

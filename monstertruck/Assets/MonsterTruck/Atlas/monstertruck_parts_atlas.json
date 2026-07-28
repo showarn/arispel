@@ -1,0 +1,273 @@
+{
+  "textureSize": [
+    2048,
+    2048
+  ],
+  "coordinateOrigin": "top-left",
+  "sprites": {
+    "body": {
+      "x": 12,
+      "yFromTop": 12,
+      "yFromBottom": 1789,
+      "width": 540,
+      "height": 247,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "chassis_with_mount_markers": {
+      "x": 564,
+      "yFromTop": 12,
+      "yFromBottom": 1902,
+      "width": 533,
+      "height": 134,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_standard": {
+      "x": 1109,
+      "yFromTop": 12,
+      "yFromBottom": 1819,
+      "width": 216,
+      "height": 217,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_mud": {
+      "x": 1337,
+      "yFromTop": 12,
+      "yFromBottom": 1819,
+      "width": 215,
+      "height": 217,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_ice": {
+      "x": 1564,
+      "yFromTop": 12,
+      "yFromBottom": 1814,
+      "width": 225,
+      "height": 222,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_glow": {
+      "x": 1801,
+      "yFromTop": 12,
+      "yFromBottom": 1819,
+      "width": 214,
+      "height": 217,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "front_bumper": {
+      "x": 12,
+      "yFromTop": 271,
+      "yFromBottom": 1653,
+      "width": 225,
+      "height": 124,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "rear_bumper": {
+      "x": 249,
+      "yFromTop": 271,
+      "yFromBottom": 1670,
+      "width": 233,
+      "height": 107,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "roof_light_bar": {
+      "x": 494,
+      "yFromTop": 271,
+      "yFromBottom": 1678,
+      "width": 221,
+      "height": 99,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "exhaust": {
+      "x": 727,
+      "yFromTop": 271,
+      "yFromBottom": 1634,
+      "width": 171,
+      "height": 143,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "suspension_spring": {
+      "x": 910,
+      "yFromTop": 271,
+      "yFromBottom": 1623,
+      "width": 87,
+      "height": 154,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "suspension_strut": {
+      "x": 1009,
+      "yFromTop": 271,
+      "yFromBottom": 1623,
+      "width": 82,
+      "height": 154,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "decal_flame": {
+      "x": 1103,
+      "yFromTop": 271,
+      "yFromBottom": 1664,
+      "width": 201,
+      "height": 113,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "decal_skull": {
+      "x": 1316,
+      "yFromTop": 271,
+      "yFromBottom": 1657,
+      "width": 188,
+      "height": 120,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "decal_lightning": {
+      "x": 1516,
+      "yFromTop": 271,
+      "yFromBottom": 1657,
+      "width": 201,
+      "height": 120,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "engine_blower": {
+      "x": 1729,
+      "yFromTop": 271,
+      "yFromBottom": 1654,
+      "width": 146,
+      "height": 123,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "air_intake": {
+      "x": 1887,
+      "yFromTop": 271,
+      "yFromBottom": 1645,
+      "width": 106,
+      "height": 132,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "fuel_tank": {
+      "x": 12,
+      "yFromTop": 437,
+      "yFromBottom": 1478,
+      "width": 115,
+      "height": 133,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "roll_cage": {
+      "x": 139,
+      "yFromTop": 437,
+      "yFromBottom": 1478,
+      "width": 220,
+      "height": 133,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "flag": {
+      "x": 371,
+      "yFromTop": 437,
+      "yFromBottom": 1446,
+      "width": 155,
+      "height": 165,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_standard_centered_256": {
+      "x": 538,
+      "yFromTop": 437,
+      "yFromBottom": 1355,
+      "width": 256,
+      "height": 256,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_mud_centered_256": {
+      "x": 806,
+      "yFromTop": 437,
+      "yFromBottom": 1355,
+      "width": 256,
+      "height": 256,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_ice_centered_256": {
+      "x": 1074,
+      "yFromTop": 437,
+      "yFromBottom": 1355,
+      "width": 256,
+      "height": 256,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    },
+    "wheel_glow_centered_256": {
+      "x": 1342,
+      "yFromTop": 437,
+      "yFromBottom": 1355,
+      "width": 256,
+      "height": 256,
+      "pivotNormalized": [
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

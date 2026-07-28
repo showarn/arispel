@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74b14230b215f6ee982447d014b9e8c, type: 3}
+  m_Name: sapphire-fish
+  m_EditorClassIdentifier: ArisMonsterTrucks.Runtime::ArisMonsterTrucks.Fishing.FishDefinition
+  stableId: sapphire-fish
+  displayName: Safirfisken
+  displayOrder: 24
+  sprite: {fileID: 21300000, guid: 6413cf880476b70efab970b5af1a7097, type: 3}
+  catchSprite: {fileID: 21300000, guid: 6413cf880476b70efab970b5af1a7097, type: 3}
+  rarity: 0
+  selectionWeight: 6.4
+  minimumLengthCentimeters: 20
+  maximumLengthCentimeters: 42
+  swimSpeed: 1.12
+  fishSound: {fileID: 0}
+  shortFact: "Safirfisken lyser djupt bl\xE5."
+  uiColor: {r: 0.08627451, g: 0.43137255, b: 0.9098039, a: 1}

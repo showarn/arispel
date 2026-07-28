@@ -1,0 +1,36 @@
+Startskärm och garage (FrontEndController, Canvas)
+└── Fiskespelet (FishingGameController)
+    └── Fiskescen
+        ├── Fiskebakgrund
+        ├── Vattenområde
+        │   ├── Bakgrundsfisk 1–6 (pooled SwimmingFishView)
+        │   ├── Vattenring 1–3 (reused)
+        │   └── Återanvänd bubbla 1–14 (pooled)
+        ├── Fiskespö
+        │   └── Spöhandtag
+        ├── Fiskelina
+        ├── Flöte
+        │   └── Flötestopp
+        ├── Fångstfisk
+        ├── Vattenstänk
+        └── Safe area (SafeAreaFitter)
+            ├── Tillbaka
+            ├── Fiskbok
+            ├── Upptäckta fiskar
+            ├── Ljud
+            ├── Stor kontrolltouchyta
+            │   └── Huvudknapp
+            ├── Vänligt tips
+            ├── Fiskbokstoning
+            │   └── Fiskbok
+            │       └── Fiskkort 1–6
+            ├── Fångsttoning
+            │   └── Fångstpopup
+            └── Återanvänd konfetti 1–24 (pooled)
+
+Data:
+
+- Resources/Config/Fishing/*.asset — sex FishDefinition ScriptableObjects.
+- FishingSaveService — versionsmärkt JSON ovanpå projektets PlayerPrefs.
+- FishSelectionService — viktat urval med injicerad IRandomProvider.
+- FishingStateMachine — tillåtna state-övergångar.
