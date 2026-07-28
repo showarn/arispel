@@ -250,10 +250,10 @@ namespace ArisMonsterTrucks.Stories
             );
             SetRect(
                 pageNumberText.rectTransform,
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0f, 137f),
-                new Vector2(250f, 50f)
+                new Vector2(1f, 0f),
+                new Vector2(1f, 0f),
+                new Vector2(-125f, 68f),
+                new Vector2(220f, 50f)
             );
             AddOutline(pageNumberText, RuntimeArt.Hex("#332052"), 2f);
 

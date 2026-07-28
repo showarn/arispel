@@ -1441,22 +1441,22 @@ namespace ArisMonsterTrucks.Fishing
 
         private void BuildTopControls()
         {
-            GameObject bottomObject = new(
-                "Gemensam nedre fiske-HUD",
+            GameObject topObject = new(
+                "Gemensam övre fiske-HUD",
                 typeof(RectTransform)
             );
-            bottomObject.transform.SetParent(safeArea, false);
+            topObject.transform.SetParent(safeArea, false);
             SetRect(
-                bottomObject.GetComponent<RectTransform>(),
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0f, 82f),
+                topObject.GetComponent<RectTransform>(),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0f, -62f),
                 new Vector2(1740f, 96f)
             );
-            Transform bottomHud = bottomObject.transform;
+            Transform topHud = topObject.transform;
 
             Button back = CreateButton(
-                bottomHud,
+                topHud,
                 "←",
                 new Vector2(-775f, 0f),
                 new Vector2(120f, 88f),
@@ -1466,7 +1466,7 @@ namespace ArisMonsterTrucks.Fishing
             back.onClick.AddListener(ExitFishing);
 
             Button book = CreateButton(
-                bottomHud,
+                topHud,
                 "FISKBOK",
                 new Vector2(-610f, 0f),
                 new Vector2(190f, 88f),
@@ -1476,7 +1476,7 @@ namespace ArisMonsterTrucks.Fishing
             book.onClick.AddListener(OpenFishBook);
 
             Button shop = CreateButton(
-                bottomHud,
+                topHud,
                 "BUTIK",
                 new Vector2(-415f, 0f),
                 new Vector2(170f, 88f),
@@ -1487,7 +1487,7 @@ namespace ArisMonsterTrucks.Fishing
 
             Image progress = CreatePanel(
                 "Upptäckta fiskar",
-                bottomHud,
+                topHud,
                 new Vector2(-180f, 0f),
                 new Vector2(260f, 82f),
                 RuntimeArt.Hex("#FFF3C4")
@@ -1503,7 +1503,7 @@ namespace ArisMonsterTrucks.Fishing
 
             Image wormIcon = CreateImage(
                 "Maskikon liten",
-                bottomHud,
+                topHud,
                 RuntimeArt.LoadSprite("Art/Fishing/UI/worm_bait")
             );
             wormIcon.preserveAspect = true;
@@ -1516,7 +1516,7 @@ namespace ArisMonsterTrucks.Fishing
             );
             wormCountText = CreateText(
                 "Maskantal",
-                bottomHud,
+                topHud,
                 "× 0",
                 35,
                 Color.white
@@ -1531,7 +1531,7 @@ namespace ArisMonsterTrucks.Fishing
             AddOutline(wormCountText, RuntimeArt.Hex("#4A3424"), 4f);
 
             Button sound = CreateButton(
-                bottomHud,
+                topHud,
                 "",
                 new Vector2(680f, 0f),
                 new Vector2(190f, 88f),
@@ -1559,7 +1559,7 @@ namespace ArisMonsterTrucks.Fishing
                 touchArea.GetComponent<RectTransform>(),
                 new Vector2(0.5f, 0f),
                 new Vector2(0.5f, 0f),
-                new Vector2(0f, 176f),
+                new Vector2(0f, 90f),
                 new Vector2(820f, 145f)
             );
 

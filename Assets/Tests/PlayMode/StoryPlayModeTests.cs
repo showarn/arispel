@@ -92,7 +92,9 @@ namespace ArisMonsterTrucks.Tests
             Assert.AreEqual(0f, controlBar.GetComponent<RectTransform>().anchorMin.y);
             Assert.AreEqual(new Vector2(-30f, 0f), previous.anchoredPosition);
             Assert.AreEqual(new Vector2(260f, 0f), next.anchoredPosition);
-            Assert.AreEqual(new Vector2(0f, 137f), pageNumber.anchoredPosition);
+            Assert.AreEqual(new Vector2(1f, 0f), pageNumber.anchorMin);
+            Assert.AreEqual(new Vector2(1f, 0f), pageNumber.anchorMax);
+            Assert.AreEqual(new Vector2(-125f, 68f), pageNumber.anchoredPosition);
             Assert.AreEqual(new Vector2(-125f, -58f), restart.anchoredPosition);
             Assert.IsNotNull(FindButtonByLabel("TEXT PÅ"));
             Assert.IsNotNull(FindButtonByLabel("LJUD PÅ"));

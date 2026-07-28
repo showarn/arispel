@@ -17,7 +17,7 @@ workflows:
         script: |
           curl --fail --location \
             --output /tmp/arisspel-ios-xcode.zip \
-            https://github.com/showarn/arispel/releases/download/ios-export-0.5.0/arisspel-ios-xcode.zip
+            https://github.com/showarn/arispel/releases/download/ios-export-0.6.0/arisspel-ios-xcode.zip
           unzip -q /tmp/arisspel-ios-xcode.zip -d "$CM_BUILD_DIR"
 
       - name: Set build number and encryption declaration
