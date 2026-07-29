@@ -13,10 +13,20 @@ namespace ArisMonsterTrucks.Fishing.Tests
         private GameObject root;
         private FishingGameController controller;
         private bool backInvoked;
+        private string savedCollection;
+        private bool hadSavedCollection;
 
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            hadSavedCollection = PlayerPrefs.HasKey(
+                FishingSaveService.SaveKey
+            );
+            savedCollection = PlayerPrefs.GetString(
+                FishingSaveService.SaveKey,
+                ""
+            );
+            PlayerPrefs.DeleteKey(FishingSaveService.SaveKey);
             root = new GameObject("Fishing test root", typeof(RectTransform));
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             controller = FishingGameController.Create(
@@ -32,6 +42,18 @@ namespace ArisMonsterTrucks.Fishing.Tests
         public IEnumerator TearDown()
         {
             AppPreferences.SoundEnabled = true;
+            if (hadSavedCollection)
+            {
+                PlayerPrefs.SetString(
+                    FishingSaveService.SaveKey,
+                    savedCollection
+                );
+            }
+            else
+            {
+                PlayerPrefs.DeleteKey(FishingSaveService.SaveKey);
+            }
+            PlayerPrefs.Save();
             if (root != null)
             {
                 UnityEngine.Object.Destroy(root);

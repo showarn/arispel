@@ -635,12 +635,9 @@ namespace ArisMonsterTrucks
             );
             SetRect(
                 playScore.rectTransform,
-                new Vector2(0.5f, 0.5f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(
-                    0f,
-                    BoardPosition.y + (BoardSize.y + 36f) * 0.5f
-                ),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0f, -145f),
                 new Vector2(235f, 82f)
             );
             playScoreText = CreateText(

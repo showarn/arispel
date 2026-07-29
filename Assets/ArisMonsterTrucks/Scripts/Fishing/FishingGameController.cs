@@ -103,6 +103,8 @@ namespace ArisMonsterTrucks.Fishing
         private GameObject baitShopRoot;
         private GameObject lureShopRoot;
         private GameObject locationPanel;
+        private GameObject gameplayTopHud;
+        private GameObject mainControlRoot;
         private GameObject catchPopup;
         private GameObject locationCompletePopup;
         private GameObject hintPanel;
@@ -1441,19 +1443,19 @@ namespace ArisMonsterTrucks.Fishing
 
         private void BuildTopControls()
         {
-            GameObject topObject = new(
+            gameplayTopHud = new GameObject(
                 "Gemensam övre fiske-HUD",
                 typeof(RectTransform)
             );
-            topObject.transform.SetParent(safeArea, false);
+            gameplayTopHud.transform.SetParent(safeArea, false);
             SetRect(
-                topObject.GetComponent<RectTransform>(),
+                gameplayTopHud.GetComponent<RectTransform>(),
                 new Vector2(0.5f, 1f),
                 new Vector2(0.5f, 1f),
                 new Vector2(0f, -62f),
                 new Vector2(1740f, 96f)
             );
-            Transform topHud = topObject.transform;
+            Transform topHud = gameplayTopHud.transform;
 
             Button back = CreateButton(
                 topHud,
@@ -1553,10 +1555,13 @@ namespace ArisMonsterTrucks.Fishing
 
         private void BuildMainControl()
         {
-            GameObject touchArea = new("Stor kontrolltouchyta", typeof(RectTransform));
-            touchArea.transform.SetParent(safeArea, false);
+            mainControlRoot = new GameObject(
+                "Stor kontrolltouchyta",
+                typeof(RectTransform)
+            );
+            mainControlRoot.transform.SetParent(safeArea, false);
             SetRect(
-                touchArea.GetComponent<RectTransform>(),
+                mainControlRoot.GetComponent<RectTransform>(),
                 new Vector2(0.5f, 0f),
                 new Vector2(0.5f, 0f),
                 new Vector2(0f, 90f),
@@ -1564,7 +1569,7 @@ namespace ArisMonsterTrucks.Fishing
             );
 
             mainButton = CreateButton(
-                touchArea.transform,
+                mainControlRoot.transform,
                 "",
                 Vector2.zero,
                 new Vector2(700f, 110f),
@@ -3548,25 +3553,19 @@ namespace ArisMonsterTrucks.Fishing
 
         private void BuildLocationSelector()
         {
-            Image background = CreateImage(
+            locationPanel = new GameObject(
                 "Fiskeplatsväljare",
-                safeArea,
-                RuntimeArt.LoadSprite("Art/Environment/colorful_background")
+                typeof(RectTransform)
             );
-            background.type = Image.Type.Simple;
-            Stretch(background.rectTransform);
-            locationPanel = background.gameObject;
+            locationPanel.transform.SetParent(safeArea, false);
+            Stretch(locationPanel.GetComponent<RectTransform>());
             SwipePageHandler swipeHandler =
                 locationPanel.AddComponent<SwipePageHandler>();
             swipeHandler.Initialize(ChangeLocationPage);
 
-            Image shade = CreateImage("Toning", background.transform, null);
-            shade.color = new Color(0.08f, 0.04f, 0.2f, 0.48f);
-            Stretch(shade.rectTransform);
-
             Text heading = CreateText(
                 "Välj fiskeplats",
-                background.transform,
+                locationPanel.transform,
                 "VÄLJ FISKEPLATS",
                 64,
                 RuntimeArt.Hex("#FFF3AD")
@@ -3581,14 +3580,21 @@ namespace ArisMonsterTrucks.Fishing
             AddOutline(heading, RuntimeArt.Hex("#40245F"), 5f);
 
             Button close = CreateButton(
-                background.transform,
+                locationPanel.transform,
                 "←",
-                new Vector2(-855f, 470f),
+                Vector2.zero,
                 new Vector2(150f, 90f),
                 RuntimeArt.Hex("#7A5AA6"),
                 72
             );
             close.onClick.AddListener(ExitFishing);
+            SetRect(
+                close.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(150f, 90f)
+            );
 
             float[] cardPositions = { -600f, 0f, 600f };
             for (
@@ -3601,7 +3607,7 @@ namespace ArisMonsterTrucks.Fishing
                 FishingLocationDefinition location =
                     FishingLocationCatalog.All[index];
                 Button card = CreateButton(
-                    background.transform,
+                    locationPanel.transform,
                     "",
                     new Vector2(cardPositions[index % 3], -35f),
                     new Vector2(510f, 700f),
@@ -3707,7 +3713,7 @@ namespace ArisMonsterTrucks.Fishing
             }
 
             previousLocationPageButton = CreateButton(
-                background.transform,
+                locationPanel.transform,
                 "‹",
                 new Vector2(-895f, -35f),
                 new Vector2(82f, 130f),
@@ -3718,7 +3724,7 @@ namespace ArisMonsterTrucks.Fishing
                 () => ChangeLocationPage(-1)
             );
             nextLocationPageButton = CreateButton(
-                background.transform,
+                locationPanel.transform,
                 "›",
                 new Vector2(895f, -35f),
                 new Vector2(82f, 130f),
@@ -3741,6 +3747,8 @@ namespace ArisMonsterTrucks.Fishing
             locationPage = Mathf.Clamp(locationIndex / 3, 0, 1);
             RefreshLocationCards();
             RefreshLocationPage();
+            gameplayTopHud.SetActive(false);
+            mainControlRoot.SetActive(false);
             locationPanel.transform.SetAsLastSibling();
             locationPanel.SetActive(true);
             mainButton.interactable = false;
@@ -3881,6 +3889,8 @@ namespace ArisMonsterTrucks.Fishing
                     swimmers[index].SetFish(fish.Sprite, fish.SwimSpeed);
                 }
             }
+            gameplayTopHud.SetActive(true);
+            mainControlRoot.SetActive(true);
             mainButton.interactable = true;
             HandleStateChanged(stateMachine.Current, stateMachine.Current);
         }

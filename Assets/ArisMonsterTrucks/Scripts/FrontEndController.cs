@@ -1110,22 +1110,36 @@ namespace ArisMonsterTrucks
             Button back = CreateButton(
                 levelSelectRoot.transform,
                 "←",
-                new Vector2(-855f, 470f),
+                Vector2.zero,
                 new Vector2(150f, 90f),
                 RuntimeArt.Hex("#7A5AA6"),
                 74
             );
             back.onClick.AddListener(ShowDashboard);
+            SetRect(
+                back.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
+                new Vector2(150f, 90f)
+            );
 
             Button workshop = CreateButton(
                 levelSelectRoot.transform,
                 "VERKSTAD",
-                new Vector2(-650f, 470f),
+                Vector2.zero,
                 new Vector2(260f, 86f),
                 RuntimeArt.Hex("#50C9F5"),
                 34
             );
             workshop.onClick.AddListener(ShowGarage);
+            SetRect(
+                workshop.image.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(300f, -58f),
+                new Vector2(260f, 86f)
+            );
 
             Text title = CreateText(
                 "Banväljartitel",
@@ -1309,7 +1323,14 @@ namespace ArisMonsterTrucks
 
             levelCoinText = CreateCoinBalance(
                 levelSelectRoot.transform,
-                new Vector2(790f, 470f)
+                Vector2.zero
+            );
+            SetRect(
+                levelCoinText.transform.parent.GetComponent<RectTransform>(),
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(-160f, -58f),
+                new Vector2(260f, 82f)
             );
             levelSelectRoot.SetActive(false);
         }

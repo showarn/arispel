@@ -56,8 +56,6 @@ namespace ArisMonsterTrucks
         private RectTransform hubSafeRoot;
         private RectTransform playSafeRoot;
         private Text playTitle;
-        private Text movesText;
-        private Text bestText;
         private Text completionMovesText;
         private Text completionStarsText;
         private Text nextMemoryButtonText;
@@ -314,18 +312,15 @@ namespace ArisMonsterTrucks
             back.onClick.AddListener(ShowHub);
             SetRect(
                 back.image.rectTransform,
-                new Vector2(0f, 0f),
-                new Vector2(0f, 0f),
-                new Vector2(85f, 62f),
+                new Vector2(0f, 1f),
+                new Vector2(0f, 1f),
+                new Vector2(85f, -58f),
                 new Vector2(150f, 90f)
             );
 
             playTitle = CreateText("Memorytitel", playSafeRoot, LevelTitles[0], 60, RuntimeArt.Hex("#FFF3AD"));
             SetRect(playTitle.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -60f), new Vector2(850f, 100f));
             AddOutline(playTitle, RuntimeArt.Hex("#40245F"), 5f);
-
-            movesText = CreateCounter("Drag", new Vector2(775f, 470f), "DRAG: 0");
-            bestText = CreateCounter("Bäst", new Vector2(775f, 380f), "BÄST: –");
 
             float[] xs = { -465f, -155f, 155f, 465f };
             float[] ys = { 220f, -25f, -270f };
@@ -354,14 +349,6 @@ namespace ArisMonsterTrucks
             }
 
             BuildCompletionPanel();
-        }
-
-        private Text CreateCounter(string name, Vector2 position, string value)
-        {
-            Image panel = CreatePanel(name, playRoot.transform, position, new Vector2(300f, 76f), RuntimeArt.Hex("#FFF3AD"));
-            Text text = CreateText(name + "text", panel.transform, value, 29, RuntimeArt.Hex("#4A266C"));
-            Stretch(text.rectTransform);
-            return text;
         }
 
         private void BuildCompletionPanel()
@@ -441,7 +428,6 @@ namespace ArisMonsterTrucks
                 HideCard(index);
                 cards[index].interactable = true;
             }
-            RefreshCounters();
         }
 
         private void SelectCard(int index)
@@ -462,7 +448,6 @@ namespace ArisMonsterTrucks
             moves++;
             int previous = firstCard;
             firstCard = -1;
-            RefreshCounters();
             if (pairIds[previous] == pairIds[index])
             {
                 matched[previous] = true;
@@ -573,7 +558,6 @@ namespace ArisMonsterTrucks
             nextMemoryButtonText.text = currentLevel < LevelCount
                 ? "NÄSTA MEMORY"
                 : "MEMORYVÄLJARE";
-            RefreshCounters();
             completionPanel.transform.SetAsLastSibling();
             completionPanel.SetActive(true);
             inputLocked = false;
@@ -589,13 +573,6 @@ namespace ArisMonsterTrucks
         {
             cardPictures[index].gameObject.SetActive(false);
             cardBacks[index].gameObject.SetActive(true);
-        }
-
-        private void RefreshCounters()
-        {
-            movesText.text = "DRAG: " + moves;
-            int best = MemoryProgress.BestMoves(currentLevel);
-            bestText.text = best > 0 ? "BÄST: " + best : "BÄST: –";
         }
 
         private static AudioClip CreateFlipSound()
